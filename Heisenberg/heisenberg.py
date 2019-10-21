@@ -12,9 +12,9 @@ L = 20
 g = nk.graph.Hypercube(length=L, n_dim=1, pbc=True)
 
 # Define the Hilbert space based on this graph
+
 # We impose to have a fixed total magnetization of zero
 hi = nk.hilbert.Spin(s=0.5, graph=g, total_sz=0)
-
 # calling the Heisenberg Hamiltonian
 ha = nk.operator.Heisenberg(hilbert=hi)
 
