@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 
-exact_gs_energy = -39.14752260706246
+exact_gs_energy = -35.61754611950565
 
 
 

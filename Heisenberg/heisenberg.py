@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import time
 
 # Define a 1d chain
-L = 22
+L = 20
 g = nk.graph.Hypercube(length=L, n_dim=1, pbc=True)
 
 # Define the Hilbert space based on this graph
@@ -18,10 +18,16 @@ hi = nk.hilbert.Spin(s=0.5, graph=g, total_sz=0)
 # calling the Heisenberg Hamiltonian
 ha = nk.operator.Heisenberg(hilbert=hi)
 
+############## exact Diagonalize
+
+
 # compute the ground-state energy (here we only need the lowest energy, and do not need the eigenstate)
+startl = time.time()
 exact_result = nk.exact.lanczos_ed(ha, first_n=1, compute_eigenvectors=False)
+endel = time.time()
 exact_gs_energy = exact_result.eigenvalues[0]
-print('The exact ground-state energy is E0=', exact_gs_energy)
+print("lanczos took",endel - startl, "seconds" )
+print('The exact ground-state energy is E0=',exact_gs_energy)
 
 ################ Jastrow Ansatz
 
