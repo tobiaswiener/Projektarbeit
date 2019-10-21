@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import time
 
 # Define a 1d chain
-L = 20
+L = 22
 g = nk.graph.Hypercube(length=L, n_dim=1, pbc=True)
 
 # Define the Hilbert space based on this graph
