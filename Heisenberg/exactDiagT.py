@@ -31,7 +31,7 @@ def deltatlist(min, max):
 
     return lengthlist, list
 
-print(deltatlist(4,28))
+print(deltatlist(4,6))
 
 
 
