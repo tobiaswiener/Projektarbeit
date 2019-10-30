@@ -24,6 +24,7 @@ def runFFNN(graph, hilbert, hamilton):
                         method='Sr')
 
     start = time.time()
-    gs.run(output_prefix="blaFF", n_iter=300)
+    gs.run(output_prefix="FF", n_iter=300)
+
     end = time.time()
     print(end-start)
