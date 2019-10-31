@@ -6,7 +6,7 @@ import exactDiag
 import RBM
 L = 6
 J = 2
-ED = True
+ED = False
 FFNeuralNet = True
 RestrictedBM = False
 graph, hilbert, hamilton = build.generateNN(length=L,coupling=J)
@@ -25,7 +25,17 @@ nhlayer = [1,2,3]
 i = 0
 names = []
 if(FFNeuralNet):
-    FFNN.runFFNN(graph,hilbert,hamilton)
+    for s in sampler:
+        for o in optimizer:
+            for nhl in nhlayer:
+                for n in n_samples:
+                    for m in methode:
+                        for ni in n_iterations:
+                            name = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, nsamples=n, methode=m, niter=ni)
+                            names.append(name)
+
+
+
 if(ED):
     gs_energy_exact = exactDiag.Lanczos(hamilton)
 if(RestrictedBM):
@@ -34,3 +44,4 @@ if(RestrictedBM):
 
 
 
+print(i)
