@@ -1,17 +1,17 @@
 import netket as nk
 import time
 
-def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, nsamples, methode, niter):
+def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples, methode, niter):
     L = graph.n_sites
-    filename = str(0) + str(L) + "_" + "FFNN" + str(nhlayers) + "_" + sampler \
+    filename = str(0) + str(L) + "_" + str(fneurons)+ "FFNN" + str(nhlayers) + "_" + sampler \
                + str(nsamples)  + "_"+ opti + "_" +  str(niter) + "_"+   methode
 
     #defining layers with var number hidden layers
     layers = []
-    layers.append(nk.layer.FullyConnected(input_size=L,output_size=int(2*L),use_bias=True))
+    layers.append(nk.layer.FullyConnected(input_size=L,output_size=int(fneurons*L),use_bias=True))
     for i in range(nhlayers):
-        layers.append(nk.layer.Tanh(input_size=int(2*L)))
-    layers.append(nk.layer.SumOutput(input_size=int(2*L)))
+        layers.append(nk.layer.Tanh(input_size=int(fneurons*L)))
+    layers.append(nk.layer.SumOutput(input_size=int(fneurons*L)))
     layers = tuple(layers) #layers must be tuple
 
     for layer in layers:

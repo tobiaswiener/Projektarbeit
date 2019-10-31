@@ -1,25 +1,30 @@
+# Import netket library
+import netket as nk
+# Import Json, this will be needed to examine log files
+import json
+# Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import json
 
-# import the data from log file
-data=json.load(open("RBM.log"))
-exact_gs_energy = -45.34782431158947
+
+data=json.load(open("06_FFNN5_ExactSampler1000_AdaMax_7000_Gd.log"))
+exact_gs_energy = -34.46969272725688
+
 # Extract the relevant information
-iters=[]
-energy_RBM=[]
+iters_Jastrow=[]
+energy_Jastrow=[]
 
 for iteration in data["Output"]:
-    iters.append(iteration["Iteration"])
-    energy_RBM.append(iteration["Energy"]["Mean"])
+    iters_Jastrow.append(iteration["Iteration"])
+    energy_Jastrow.append(iteration["Energy"]["Mean"])
 
 fig, ax1 = plt.subplots()
-ax1.plot(iters, energy_RBM, color='red', label='Energy (RBM)')
+ax1.plot(iters_Jastrow, energy_Jastrow, color='C8', label='Energy (Jastrow)')
 ax1.set_ylabel('Energy')
 ax1.set_xlabel('Iteration')
-plt.axis([0,iters[-1],exact_gs_energy-0.03,exact_gs_energy+0.2])
+plt.axis([0,iters_Jastrow[-1],exact_gs_energy-0.1,exact_gs_energy+0.4])
 plt.axhline(y=exact_gs_energy, xmin=0,
-                xmax=iters[-1], linewidth=2, color='k', label='Exact')
+                xmax=iters_Jastrow[-1], linewidth=2, color='k', label='Exact')
 ax1.legend()
 plt.show()
