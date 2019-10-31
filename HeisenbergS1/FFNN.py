@@ -4,7 +4,7 @@ import time
 def runFFNN(graph, hilbert, hamilton):
     L = graph.n_sites
     layers = (nk.layer.FullyConnected(input_size=L,output_size=int(2*L),use_bias=True),
-            nk.layer.Lncosh(input_size=int(2*L)),
+            nk.layer.Tanh(input_size=int(2*L)),
             nk.layer.SumOutput(input_size=int(2*L))
             )
     for layer in layers:

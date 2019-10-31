@@ -8,7 +8,7 @@ L = 6
 J = 2
 ED = True
 FFNeuralNet = True
-RestrictedBM = True
+RestrictedBM = False
 graph, hilbert, hamilton = build.generateNN(length=L,coupling=J)
 
 if(FFNeuralNet):
