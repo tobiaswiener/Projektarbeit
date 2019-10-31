@@ -74,6 +74,7 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, nsamples, methode, 
 
 
     start = time.time()
-    # gs.run(output_prefix="FF", n_iter=niter)
+    gs.run(output_prefix=filename, n_iter=niter)
     end = time.time()
-    return filename
+    print("time: ", end-start)
+    return filename, end-start
