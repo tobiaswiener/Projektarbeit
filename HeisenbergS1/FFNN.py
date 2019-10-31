@@ -1,18 +1,24 @@
 import netket as nk
 import time
 
-def runFFNN(graph, hilbert, hamilton):
+def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, nsamples, methode, niter):
     L = graph.n_sites
-    layers = (nk.layer.FullyConnected(input_size=L,output_size=int(2*L),use_bias=True),
-            nk.layer.Tanh(input_size=int(2*L)),
-            nk.layer.SumOutput(input_size=int(2*L))
-            )
+    filename = str(0) + str(L) + "_" + "FFNN" + str(nhlayers) + "_" + sampler \
+               + str(nsamples)  + "_"+ opti + "_" +  str(niter) + "_"+   methode
+
+    #defining layers with var number hidden layers
+    layers = []
+    layers.append(nk.layer.FullyConnected(input_size=L,output_size=int(2*L),use_bias=True))
+    for i in range(nhlayers):
+        layers.append(nk.layer.Tanh(input_size=int(2*L)))
+    layers.append(nk.layer.SumOutput(input_size=int(2*L)))
+    layers = tuple(layers) #layers must be tuple
+
     for layer in layers:
         layer.init_random_parameters(seed=12345, sigma=0.01)
 
-    ffnn = nk.machine.FFNN(hilbert, layers)
+    ma = nk.machine.FFNN(hilbert, layers)
 
-    sa = nk.sampler.MetropolisExchange(graph=graph, machine=ffnn)
 
     #different Sampler
     if(sampler == "ExactSampler"):
@@ -49,15 +55,25 @@ def runFFNN(graph, hilbert, hamilton):
         opt = nk.optimizer.AdaDelta(rho=0.95,epscut=1)
 
 
-    gs = nk.variational.Vmc(hamiltonian=hamilton,
-                        sampler=sa,
-                        optimizer=opt,
-                        n_samples=1000,
-                        use_iterative=True,
-                        method='Sr')
+
+    if (methode == "Sr"):
+        gs = nk.variational.Vmc(hamiltonian=hamilton,
+                                sampler=sa,
+                                optimizer=opt,
+                                n_samples=nsamples,
+                                use_iterative=True,
+                                method='Sr')
+    elif (methode == "Gd"):
+        gs = nk.variational.Vmc(hamiltonian=hamilton,
+                                sampler=sa,
+                                optimizer=opt,
+                                n_samples=nsamples,
+                                use_iterative=False,
+                                method='Gd')
+
+
 
     start = time.time()
-    gs.run(output_prefix="FF", n_iter=300)
-
+    # gs.run(output_prefix="FF", n_iter=niter)
     end = time.time()
-    print(end-start)
+    return filename
