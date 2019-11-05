@@ -81,7 +81,5 @@ structure_factor = nk.operator.LocalOperator(hi, sf, sites)
 # Add the observable to the VMC object
 gs.add_observable(structure_factor, "Structure Factor")
 
-
-
 # Run the optimization protocol
 gs.run(output_prefix='test', n_iter=600)
