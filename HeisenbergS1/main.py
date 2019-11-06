@@ -5,7 +5,7 @@ import build
 import FFNN
 import exactDiag
 import RBM
-L = 6
+L = 18
 J = 1
 ED = True
 FFNeuralNet = True
@@ -15,15 +15,13 @@ testing = True
 
 if(testing):
     machine = ["Jastrow","JastrowSymm","FFNN", "RbmSpin", "RmbSpinSymm"]
-    sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
-               "MetropolisLocal", "MetropolisLocalPt", "MetropolisHamiltonian",
-               "MetropolisHamiltonianPt", "MetropolisHop"]
-    optimizer = ["AdaMax","Sgd", "RmsProp"]
-    methode = ["Gd","Sr"]
-    n_samples = [200,500,1000]
+    sampler = ["ExactSampler", "MetropolisHop"]
+    optimizer = ["AdaMax"]
+    methode = ["Gd"]
+    n_samples = [1000]
     n_iterations = [7000]
     nhlayer = [3,5]
-    fneuron =[3,5,7]
+    fneuron =[5,7,9]
 else:
     machine = ["Jastrow", "JastrowSymm", "FFNN", "RbmSpin", "RmbSpinSymm"]
     sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",

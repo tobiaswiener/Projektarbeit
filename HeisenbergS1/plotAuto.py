@@ -16,9 +16,9 @@ L = 6
 
 if(testing):
     sampler = ["ExactSampler",
-               "MetropolisLocal", "MetropolisLocalPt"]
+               "MetropolisHamiltonianPt", "MetropolisHop"]
     optimizer = ["AdaMax"]
-    methode = ["Gd","Sr"]
+    methode = ["Gd"]
     n_samples = [200,500,1000]
     n_iterations = [7000]
     nhlayer = [3,5]

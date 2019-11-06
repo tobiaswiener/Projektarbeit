@@ -4,7 +4,6 @@ import time
 
 
 def generateNN(length, coupling):
-    print("hallo")
     J = [coupling,0]
     edge_colors = []
     for i in range(length):
