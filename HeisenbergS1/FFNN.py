@@ -77,12 +77,9 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples,
     gs.run(output_prefix=filename, n_iter=niter)
     end = time.time()
     print("time: ", end-start)
-<<<<<<< Updated upstream
-    return filename, end-start
-=======
+
     return filename, end-start
 
 def runFFNNFile(input):
     for i in input["input"]:
 
->>>>>>> Stashed changes
