@@ -5,7 +5,7 @@ import build
 import FFNN
 import exactDiag
 import RBM
-L = 6
+
 J = 1
 ED = False
 FFNeuralNet = True
@@ -24,6 +24,7 @@ if(testing):
     n_iterations = [7000]
     nhlayer = [3,5]
     fneuron =[3,5,7]
+    L = [8]
 else:
     machine = ["Jastrow", "JastrowSymm", "FFNN", "RbmSpin", "RmbSpinSymm"]
     sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
@@ -37,17 +38,19 @@ else:
     fneuron = [3]
 
 names = [[] for _ in range(2)]
+
 if(FFNeuralNet):
-    for s in sampler:
-        for o in optimizer:
-            for nhl in nhlayer:
-                for fn in fneuron:
-                    for n in n_samples:
-                        for m in methode:
-                            for ni in n_iterations:
-                                name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=n, methode=m, niter=ni)
-                                names[0].append(name)
-                                names[1].append(time)
+    for l in L:
+        for s in sampler:
+            for o in optimizer:
+                for nhl in nhlayer:
+                    for fn in fneuron:
+                        for n in n_samples:
+                            for m in methode:
+                                for ni in n_iterations:
+                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=n, methode=m, niter=ni)
+                                    names[0].append(name)
+                                    names[1].append(time)
 
 if(ED):
     gs_energy_exact = exactDiag.Lanczos(graph=graph, ha=hamilton)
