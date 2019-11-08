@@ -16,11 +16,11 @@ folder = ""
 
 if(testing):
     sampler = ["ExactSampler",
-               "MetropolisHamiltonianPt", "MetropolisHop"]
+               "MetropolisLocal", "MetropolisHop"]
     optimizer = ["AdaMax"]
     methode = ["Gd"]
     n_samples = [200,500,1000]
-    n_iterations = [1000,7000,10000,11000]
+    n_iterations = [1000,5000,7000,11000]
     nhlayer = [3]
     fneuron =[7]
     L = [6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]

@@ -6,6 +6,9 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples,
     filename = str(0) + str(L) + "_" + str(fneurons)+ "FFNN" + str(nhlayers) + "_" + sampler \
                + str(nsamples)  + "_"+ opti + "_" +  str(niter) + "_"+   methode
 
+
+
+
     #defining layers with var number hidden layers
     layers = []
     layers.append(nk.layer.FullyConnected(input_size=L,output_size=int(fneurons*L),use_bias=True))
