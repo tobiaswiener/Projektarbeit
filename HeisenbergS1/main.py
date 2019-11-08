@@ -15,7 +15,7 @@ testing = True
 
 if(testing):
     machine = ["Jastrow","JastrowSymm","FFNN", "RbmSpin", "RmbSpinSymm"]
-    sampler = ["MetropolisHop"]
+    sampler = ["MetropolisHop","MetropolisLocal"]
     optimizer = ["AdaMax"]
     methode = ["Gd"]
     n_samples = [1000]
