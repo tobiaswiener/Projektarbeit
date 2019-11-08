@@ -12,18 +12,18 @@ import os.path
 
 
 testing = True
-folder = "3rdResults/"
+folder = ""
 
 if(testing):
-    sampler = ["ExactSampler",
-               "MetropolisLocal", "MetropolisLocalPt"]
-    optimizer = ["AdaMax"]
+    sampler = ["ExactSampler", "MetropolisHop","MetropolisLocal"
+               ]
+    optimizer = ["Sgd","RmsProp","AdaMax"]
     methode = ["Gd","Sr"]
     n_samples = [200,500,1000]
-    n_iterations = [7000]
-    nhlayer = [3,5]
-    fneuron =[3,5,7]
-    L = [8,10,12,14,16,18,20]
+    n_iterations = [1000,7000,10000,11000]
+    nhlayer = [3]
+    fneuron =[7]
+    L = [6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]
 else: #all that were done
     sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
                "MetropolisLocal", "MetropolisLocalPt", "MetropolisHamiltonian",
@@ -46,9 +46,11 @@ for l in L:
                     for n in n_samples:
                         for m in methode:
                             for ni in n_iterations:
-                                filename = str(0) + str(L) + "_" + str(fn) + "FFNN" + str(nhl) + "_" + s \
+                                filename = str(0) + str(l) + "_" + str(fn) + "FFNN" + str(nhl) + "_" + s \
                                           + str(n) + "_" + str(o) + "_" + str(ni) + "_" + m +".log"
+
                                 if(os.path.isfile(folder + filename)):
                                     filenameList.append(filename)
-                                plot.SubPlotFromFile(filenameList,folder)
+
+plot.SubPlotFromFile(filenameList, folder)
 
