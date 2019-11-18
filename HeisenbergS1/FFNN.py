@@ -18,7 +18,7 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples,
     layers = tuple(layers) #layers must be tuple
 
     for layer in layers:
-        layer.init_random_parameters(seed=12345, sigma=0.01)
+        layer.init_random_parameters(seed=123456, sigma=0.01)
 
     ma = nk.machine.FFNN(hilbert, layers)
 
@@ -72,12 +72,12 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples,
                                 optimizer=opt,
                                 n_samples=nsamples,
                                 use_iterative=False,
-                                method='Gd')
+                                method='Gd',discarded_samples=10000)
 
 
 
     start = time.time()
-    gs.run(output_prefix=filename, n_iter=niter)
+    gs.run(output_prefix=filename, n_iter=niter,step_size=5)
     end = time.time()
     print("time: ", end-start)
     return filename, end-start

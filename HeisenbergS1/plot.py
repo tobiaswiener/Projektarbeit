@@ -16,7 +16,7 @@ def is_json(myjson):
   return True
 
 def plotFromLogFile(filename):
-    data=json.load(open("1stResults/"+filename))
+    data=json.load(open(filename))
     exact_gs_energy = -34.46969272725688
 
 # Extract the relevant information
@@ -31,9 +31,10 @@ def plotFromLogFile(filename):
     ax1.plot(iters_Jastrow, energy_Jastrow, color='C8', label=filename)
     ax1.set_ylabel('Energy')
     ax1.set_xlabel('Iteration')
-    plt.axis([0,iters_Jastrow[-1],exact_gs_energy-1,exact_gs_energy+10])
-    plt.axhline(y=exact_gs_energy, xmin=0,
-                 xmax=iters_Jastrow[-1], linewidth=2, color='k', label='Exact')
+    #plt.axis([0,iters_Jastrow[-1],exact_gs_energy-1,exact_gs_energy+10])
+    #plt.axhline(y=exact_gs_energy, xmin=0,
+    #             xmax=iters_Jastrow[-1], linewidth=2, color='k', label='Exact')
+    plt.axis([0, iters[-1], -130, 70])
     ax1.legend()
     plt.show()
 
@@ -45,6 +46,7 @@ def SubPlotFromFile(filenameList, folder=""):
     for counter, name in enumerate(filenameList):
         data = []
         with open(folder + name) as f:
+            print(folder + name)
             a = f.readlines()
         for line in a:
             try:
@@ -72,6 +74,7 @@ def SubPlotFromFile(filenameList, folder=""):
         ax1.set_ylabel('Energy')
         ax1.set_xlabel('Iteration')
         ax1.xaxis.set_visible(True)
+        print(iters)
         plt.axis([0, iters[-1], -130, 70])
         #plt.axis([0, iters[-1], exact_gs_energy - 1, exact_gs_energy + 50])
         #plt.axhline(y=exact_gs_energy, xmin=0,

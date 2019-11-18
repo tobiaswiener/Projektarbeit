@@ -15,9 +15,9 @@ def generateNN(length, coupling):
     hi = nk.hilbert.Spin(graph=g, s=1)
 
     # matrices
-    sigmax = np.sqrt(2) * np.array([[0, 1., 0], [1., 0, 1.], [0, 1., 0]])
-    sigmay = np.sqrt(2) * np.array([[0, -1j, 0], [1j, 0, -1j], [0, 1j, 0]])
-    sigmaz = np.array([[2, 0, 0], [0, 0, 0], [0, 0, -2]])
+    sigmax = 1/np.sqrt(2) * np.array([[0, 1., 0], [1., 0, 1.], [0, 1., 0]])
+    sigmay = 1/np.sqrt(2) * np.array([[0, -1j, 0], [1j, 0, -1j], [0, 1j, 0]])
+    sigmaz = np.array([[1, 0, 0], [0, 0, 0], [0, 0, -1]])
 
     interaction = np.kron(sigmax, sigmax) + np.kron(sigmay, sigmay) + np.kron(sigmaz, sigmaz)
     bond_operator = [(J[0] * interaction).tolist(),

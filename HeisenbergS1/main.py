@@ -7,22 +7,23 @@ import exactDiag
 import RBM
 
 J = 1
-ED = False
-FFNeuralNet = True
+ED = True
+FFNeuralNet = False
 RestrictedBM = False
 
 testing = True
 
 if(testing):
     machine = ["Jastrow","JastrowSymm","FFNN", "RbmSpin", "RmbSpinSymm"]
-    sampler = ["MetropolisHop","MetropolisLocal"]
+    sampler = ["MetropolisHop"]
     optimizer = ["AdaMax"]
     methode = ["Gd"]
-    n_samples = [1000]
-    n_iterations = [7000]
+    #n_samples = [1000]
+    f_samples = [100]
+    n_iterations = [1000]
     nhlayer = [3]
     fneuron =[7]
-    L = np.arange(20,100,2)
+    L = [8]
 else:
     machine = ["Jastrow", "JastrowSymm", "FFNN", "RbmSpin", "RmbSpinSymm"]
     sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
@@ -43,19 +44,21 @@ if(FFNeuralNet):
             for o in optimizer:
                 for nhl in nhlayer:
                     for fn in fneuron:
-                        for n in n_samples:
+                        for f in f_samples:
                             for m in methode:
                                 for ni in n_iterations:
                                     graph, hilbert, hamilton = build.generateNN(length=l, coupling=J)
-                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=n, methode=m, niter=ni)
+                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=f*l, methode=m, niter=ni)
                                     names[0].append(name)
                                     names[1].append(time)
-
+                                    with open("times.csv","a",newline="") as myfile:
+                                        myfile.write(str(name)+": "+ str(time)+"\n")
+graph, hilbert, hamilton = build.generateNN(length=12, coupling=J)
 if(ED):
     gs_energy_exact = exactDiag.Lanczos(graph=graph, ha=hamilton)
 if(RestrictedBM):
     RBM.runRBM(graph,hilbert,hamilton)
 
-with open("times.csv", 'w', newline='') as myfile:
-    wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-    wr.writerow(names)
+# with open("times.csv", 'w', newline='') as myfile:
+#     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+#     wr.writerow(names)
