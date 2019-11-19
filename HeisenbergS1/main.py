@@ -7,8 +7,8 @@ import exactDiag
 import RBM
 
 J = 1
-ED = True
-FFNeuralNet = False
+ED = False
+FFNeuralNet = True
 RestrictedBM = False
 
 testing = True
@@ -19,11 +19,12 @@ if(testing):
     optimizer = ["AdaMax"]
     methode = ["Gd"]
     #n_samples = [1000]
-    f_samples = [100]
-    n_iterations = [1000]
+    f_samples = [150,200]
+    n_iterations = [2000]
     nhlayer = [3]
     fneuron =[7]
-    L = [8]
+    L = [30]
+    folder = "6/"
 else:
     machine = ["Jastrow", "JastrowSymm", "FFNN", "RbmSpin", "RmbSpinSymm"]
     sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
@@ -48,7 +49,7 @@ if(FFNeuralNet):
                             for m in methode:
                                 for ni in n_iterations:
                                     graph, hilbert, hamilton = build.generateNN(length=l, coupling=J)
-                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=f*l, methode=m, niter=ni)
+                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=f*l, methode=m, niter=ni,folder=folder)
                                     names[0].append(name)
                                     names[1].append(time)
                                     with open("times.csv","a",newline="") as myfile:

@@ -1,7 +1,7 @@
 import netket as nk
 import time
 
-def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples, methode, niter):
+def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples, methode, niter,folder):
     L = graph.n_sites
     filename = str(0) + str(L) + "_" + str(fneurons)+ "FFNN" + str(nhlayers) + "_" + sampler \
                + str(nsamples)  + "_"+ opti + "_" +  str(niter) + "_"+   methode
@@ -72,12 +72,12 @@ def runFFNN(graph, hilbert, hamilton, sampler,opti,nhlayers, fneurons, nsamples,
                                 optimizer=opt,
                                 n_samples=nsamples,
                                 use_iterative=False,
-                                method='Gd',discarded_samples=10000)
+                                method='Gd',discarded_samples=2000)
 
 
 
     start = time.time()
-    gs.run(output_prefix=filename, n_iter=niter,step_size=5)
+    gs.run(output_prefix=folder+filename, n_iter=niter,step_size=3)
     end = time.time()
     print("time: ", end-start)
     return filename, end-start

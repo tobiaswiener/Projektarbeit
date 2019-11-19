@@ -21,7 +21,7 @@ if(testing):
     methode = ["Gd"]
     #n_samples = [1000]
     f_samples = [100,150,200]
-    n_iterations = [1000,2000]
+    n_iterations = [1000]
     nhlayer = [3]
     fneuron =[7]
     L = [26,30,40,50,60,70,80,90,100]
