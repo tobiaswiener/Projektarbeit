@@ -1,18 +1,16 @@
 import numpy as np
 import netket as nk
 import build
-import loader
 import json
 import os
-
-
+import load
 
 def run_it(filename):
     """build Graph, Hilbert Space and Hamiltonian"""
 
-    data =  loader.spec_Variables.load_from_File(filename)
+    data =  load.spec_Variables.load_from_File(filename)
 
-    todo = loader.spec_Variables(data["input"])
+    todo = load.spec_Variables(data["input"])
 
     graph, hilbert, hamilton = build.generateNN(length=todo._L, coupling=todo._J)
 
