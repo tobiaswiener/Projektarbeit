@@ -19,7 +19,10 @@ class spec_Variables():
 
         """Sampler"""
         self._sampler = input["sampler"]["type"]
-
+        try:
+            self._d_max = input["sampler"]["d_max"]
+        except():
+            pass
 
 
         """Optimizer"""

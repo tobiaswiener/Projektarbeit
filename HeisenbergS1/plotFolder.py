@@ -2,7 +2,7 @@ import plot
 import os.path
 
 
-folder = "6/"
+folder = "SamplerTests/ersteTests/"
 filenameList=[]
 for filename in os.listdir(folder):
     if filename.endswith(".log"):

@@ -29,9 +29,11 @@ def run_it(filename):
         layer.init_random_parameters(seed=12345, sigma=0.01)
     ma = nk.machine.FFNN(hilbert, layers)
 
-    """Sampler Metropolis Local"""
-    sa = nk.sampler.MetropolisLocal(machine=ma)
-
+    """Sampler"""
+    if(todo._sampler == "MetropolisLocal"):
+        sa = nk.sampler.MetropolisLocal(machine=ma)
+    elif(todo._sampler== "MetropolisHop"):
+        sa = nk.sampler.MetropolisHop(machine=ma,d_max=todo._d_max)
     """Optimizer AdaMax"""
     opt = nk.optimizer.AdaMax(alpha=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
 
