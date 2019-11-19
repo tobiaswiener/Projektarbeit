@@ -2,11 +2,15 @@ import json
 import numpy as np
 
 
+
+
+
 class spec_Variables():
     def __init__(self,input):
         """variables to specify"""
         self._L = input["L"]
         self._J = input["J"]
+
         """Network"""
         self._numberHiddenLayers = input["machine"]["numberHiddenLayers"]
         self._factorNeurons = input["machine"]["factorNeurons"]
@@ -43,7 +47,7 @@ class spec_Variables():
     def load_from_File(file):
         with open (file) as f:
             data = json.load(f)
-            input = data["input"][0]
+            input = data["input"]
         return input
 
 
