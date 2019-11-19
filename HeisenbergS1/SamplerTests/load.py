@@ -4,7 +4,6 @@ import numpy as np
 
 
 
-
 class spec_Variables():
     def __init__(self,input):
         """variables to specify"""
@@ -19,10 +18,11 @@ class spec_Variables():
 
         """Sampler"""
         self._sampler = input["sampler"]["type"]
-        try:
-            self._d_max = input["sampler"]["d_max"]
-        except():
+        if(self._sampler == "MetropolisLocal"):
             pass
+        elif(self._sampler == "MetropolisHop"):
+            self._d_max = input["sampler"]["d_max"]
+
 
 
         """Optimizer"""

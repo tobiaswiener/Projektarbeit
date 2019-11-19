@@ -22,11 +22,11 @@ _actFunc = ["tanh"]
 
 
 """Optimizer"""
-_optimizer = ["AdaMax"]
-_alpha=[0.001,0.005]
+_optimizer = ["AdaMax","AmsGrad"]
+_alpha=[0.001]
 _beta1=[0.9]
 _beta2=[0.999]
-_epscut=[1]
+_epscut=[1e-07]
 
 """Sampler"""
 _sampler = ["MetropolisLocal","MetropolisHop"]
@@ -58,7 +58,9 @@ class Create:
                                      _use_cholesky, _target,_n_iter,_d_max)
 
         for i in all_comb:
+
             if (i[2] == "MetropolisLocal"):
+
                 dicc = {
                     "input":{
                         "L":i[0], "J":i[1],"machine":{"type":"FFNN", "numberHiddenLayers":i[3], "factorNeurons":i[4], "actFunc":i[5]},
@@ -68,17 +70,6 @@ class Create:
                                 "diag_shift": i[15],"use_iterative": i[16],"use_cholesky": i[17]},
                         "n_iter":i[19]}
                          }
-                n = 1
-                filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[2] + str(n) + '.ip'
-
-                while(os.path.isfile(filename)):
-                    n +=1
-                    filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[2] + str(n) + '.ip'
-
-                with open(filename, 'w') as outfile:
-                    json.dump(dicc, outfile)
-
-
 
             elif(i[2] == "MetropolisHop"):
                 dicc = {
@@ -91,17 +82,18 @@ class Create:
                                 "target": i[18], "method": i[13],
                                 "diag_shift": i[15], "use_iterative": i[16], "use_cholesky": i[17]},
                         "n_iter": i[19]}
-                }
-                n = 1
-                filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[2] + str(n) + '.ip'
+                        }
 
-                while (os.path.isfile(filename)):
-                    n += 1
-                    filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[2] + str(n) + '.ip'
+            n = 1
+            filename = directory + "/" + str(dicc["input"]["L"]) + "_" + "FFNN" + "_" + str(dicc["input"]["optimizer"]["type"]) + "_" + str(dicc["input"]["sampler"]["type"]) + str(n) + '.ip'
 
-                with open(filename, 'w') as outfile:
-                    json.dump(dicc, outfile)
+            while (os.path.isfile(filename)):
 
+                n += 1
+                filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[6] + "_"  + i[2] + str(n) + '.ip'
+
+            with open(filename, 'w') as outfile:
+                json.dump(dicc, outfile)
 
 
 Create.create()

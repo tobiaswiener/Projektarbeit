@@ -5,7 +5,7 @@ import loader
 import json
 import os
 
-directory = "ersteTests"
+
 
 def run_it(filename):
     """build Graph, Hilbert Space and Hamiltonian"""
@@ -34,8 +34,11 @@ def run_it(filename):
         sa = nk.sampler.MetropolisLocal(machine=ma)
     elif(todo._sampler== "MetropolisHop"):
         sa = nk.sampler.MetropolisHop(machine=ma,d_max=todo._d_max)
-    """Optimizer AdaMax"""
-    opt = nk.optimizer.AdaMax(alpha=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
+    """Optimizer"""
+    if(todo._optimizer == "AdaMax"):
+        opt = nk.optimizer.AdaMax(alpha=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
+    elif(todo._optimizer == "AmsGrad"):
+        opt = nk.optimizer.AmsGrad(learning_rate=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
 
     """VMC"""
     gs = nk.variational.Vmc(hamiltonian=hamilton,
@@ -59,8 +62,11 @@ def run_it(filename):
 
     os.remove(filename)
 
+def main():
+    directory = "ersteTests"
+    for filename in os.scandir(directory+"/"):
+        if(filename.path.endswith(".ip")):
+            run_it(filename=filename.path)
 
-
-for filename in os.scandir(directory+"/"):
-    if(filename.path.endswith(".ip")):
-        run_it(filename=filename.path)
+if __name__=="__main__":
+    main()
