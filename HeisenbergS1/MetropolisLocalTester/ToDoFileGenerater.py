@@ -3,6 +3,14 @@ import netket as nk
 import build
 import json
 import itertools
+import os
+
+
+directory = "ersteTests"
+try:
+    os.mkdir(directory)
+except(FileExistsError):
+    pass
 
 """variables to specify"""
 _L = [10,12]
@@ -27,12 +35,12 @@ _sampler = ["MetropolisLocal"]
 _discarded_samples = [-1]
 _discarded_samples_on_init = [0]
 _method = ["Gd"]
-_n_samples = [1000,2000]
+_n_samples = [10,20]
 _diag_shift = [0.01]
 _use_iterative = [False]
 _use_cholesky = [True]
 _target = ["energy"]
-_n_iter = [500,100]
+_n_iter = [2,4]
 
 
 
@@ -45,10 +53,8 @@ class Create:
                                      _optimizer, _alpha, _beta1, _beta2, _epscut, _discarded_samples,
                                      _discarded_samples_on_init, _method, _n_samples, _diag_shift, _use_iterative,
                                      _use_cholesky, _target,_n_iter)
-
-        for i i all_comb:
-            print(i)
-
+        n = 0
+        for i in all_comb:
             dicc = {
                 "input":{
                     "L":i[0], "J":i[1],"machine":{"type":"FFNN", "numberHiddenLayers":i[3], "factorNeurons":i[4], "actFunc":i[5]},
@@ -57,11 +63,10 @@ class Create:
                     "VMC": {"n_samples":i[14],"discarded_samples": i[11],"discarded_samples_on_init":i[12],"target": i[18], "method":i[13],
                             "diag_shift": i[15],"use_iterative": i[16],"use_cholesky": i[17]},
                     "n_iter":i[19]}
-                }
-            with open(str(j)+'.txt', 'w') as outfile:
+                     }
+            with open(directory + "/" + str(n)+'.ip', 'w') as outfile:
                 json.dump(dicc, outfile)
-
-            j =+ 1
+            n += 1
 
 
 Create.create()

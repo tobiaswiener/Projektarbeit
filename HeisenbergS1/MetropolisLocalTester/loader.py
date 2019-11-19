@@ -47,8 +47,7 @@ class spec_Variables():
     def load_from_File(file):
         with open (file) as f:
             data = json.load(f)
-            input = data["input"]
-        return input
+        return data
 
 
 

@@ -2,15 +2,17 @@ import numpy as np
 import netket as nk
 import build
 import loader
+import json
+import os
 
-filename = "templateAdaMax.ip"
+directory = "ersteTests"
 
-todo = loader.spec_Variables(loader.spec_Variables.load_from_File(filename))
-
-
-
-def run_it(todo):
+def run_it(filename):
     """build Graph, Hilbert Space and Hamiltonian"""
+
+    data =  loader.spec_Variables.load_from_File(filename)
+
+    todo = loader.spec_Variables(data["input"])
 
     graph, hilbert, hamilton = build.generateNN(length=todo._L, coupling=todo._J)
 
@@ -46,6 +48,17 @@ def run_it(todo):
                                     discarded_samples_on_init=todo._discarded_samples_on_init,
                                     target=todo._target)
 
-    gs.run(output_prefix=filename, n_iter=todo._n_iter)
+    gs.run(output_prefix=filename[:-3], n_iter=todo._n_iter)
 
-run_it(todo=todo)
+
+    with open(filename[:-3]+".log","a") as f:
+        f.write("\n")
+        json.dump(data,f)
+
+    os.remove(filename)
+
+
+
+for filename in os.scandir(directory+"/"):
+    if(filename.path.endswith(".ip")):
+        run_it(filename=filename.path)
