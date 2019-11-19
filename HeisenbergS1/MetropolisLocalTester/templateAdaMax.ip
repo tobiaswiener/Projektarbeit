@@ -1,0 +1,8 @@
+{"input":
+{"L":5, "J":1,
+    "machine":{"type":"FFNN", "numberHiddenLayers":5, "factorNeurons":4, "actFunc":"tanh"},
+    "sampler":{"type":"MetropolisLocal"},
+    "optimizer":{"type":"AdaMax", "alpha":3, "beta1":8, "beta2":4, "epscut":1},
+    "VMC": {"n_samples":1000,"discarded_samples": -1,"discarded_samples_on_init": 0,"target": "energy", "method":"Sr","diag_shift": 0.01,"use_iterative": false,"use_cholesky": true},
+    "n_iter":5}
+}
