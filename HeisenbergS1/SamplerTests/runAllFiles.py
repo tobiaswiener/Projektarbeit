@@ -3,19 +3,16 @@ import netket as nk
 import build
 import json
 import os
-import load
+import SamplerTests.load as load
 import time
 
-def run_it(filename):
-    """build Graph, Hilbert Space and Hamiltonian"""
+def run_single_file(file_name:str, folder:str):
 
-    data =  load.spec_Variables.load_from_File(filename)
+    todo = load.specs_runnable(input_dict["input"])
 
-    todo = load.spec_Variables(data["input"])
 
     graph, hilbert, hamilton = build.generateNN(length=todo._L, coupling=todo._J)
 
-    """defining layers with var number hidden layers"""
 
     layers = []
     layers.append(nk.layer.FullyConnected(input_size=todo._L, output_size=int(todo._factorNeurons * todo._L), use_bias=True))
@@ -28,18 +25,21 @@ def run_it(filename):
         layer.init_random_parameters(seed=12345, sigma=0.01)
     ma = nk.machine.FFNN(hilbert, layers)
 
-    """Sampler"""
+
+
     if(todo._sampler == "MetropolisLocal"):
         sa = nk.sampler.MetropolisLocal(machine=ma)
     elif(todo._sampler== "MetropolisHop"):
         sa = nk.sampler.MetropolisHop(machine=ma,d_max=todo._d_max)
-    """Optimizer"""
+
+
+
+
     if(todo._optimizer == "AdaMax"):
         opt = nk.optimizer.AdaMax(alpha=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
     elif(todo._optimizer == "AmsGrad"):
         opt = nk.optimizer.AmsGrad(learning_rate=todo._alpha,beta1=todo._beta1,beta2=todo._beta2,epscut=todo._epscut)
 
-    """VMC"""
     gs = nk.variational.Vmc(hamiltonian=hamilton,
                                     sampler=sa,
                                     optimizer=opt,

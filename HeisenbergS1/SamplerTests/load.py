@@ -120,4 +120,11 @@ class specs_runnable:
 
 
 
-
+    @staticmethod
+    def run_all_files(folder: str):
+        for file_name in os.listdir(folder):
+            if file_name.endswith(".ip"):
+                todo = specs_runnable(file_name,folder)
+                todo.run_spec()
+            else:
+                continue
