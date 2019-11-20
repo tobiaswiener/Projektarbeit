@@ -1,11 +1,25 @@
 import json
 import numpy as np
+import build
+import netket as nk
+import time
+import os
+
+class specs_runnable:
+
+    def __init__(self,file_name:str, folder:str):
+
+
+        self.input_dict = specs_runnable.file_to_dict(file_name, folder)
+
+
+        self.file_name = file_name
+        self.folder = folder
 
 
 
 
-class spec_Variables():
-    def __init__(self,input):
+        input = self.input_dict["input"]
         """variables to specify"""
         self._L = input["L"]
         self._J = input["J"]
@@ -45,6 +59,58 @@ class spec_Variables():
         self._use_cholesky =  input["VMC"]["use_cholesky"]
 
         self._n_iter =  input["n_iter"]
+
+
+
+
+    def run_spec(self):
+        graph, hilbert, hamilton = build.generateNN(length=self._L, coupling=self._J)
+
+        layers = []
+        layers.append(
+            nk.layer.FullyConnected(input_size=self._L, output_size=int(self._factorNeurons * self._L), use_bias=True))
+        for i in range(self._numberHiddenLayers):
+            layers.append(nk.layer.Tanh(input_size=int(self._factorNeurons * self._L)))
+        layers.append(nk.layer.SumOutput(input_size=int(self._factorNeurons * self._L)))
+        layers = tuple(layers)  # layers must be tuple
+
+        for layer in layers:
+            layer.init_random_parameters(seed=12345, sigma=0.01)
+        ma = nk.machine.FFNN(hilbert, layers)
+
+        if (self._sampler == "MetropolisLocal"):
+            sa = nk.sampler.MetropolisLocal(machine=ma)
+        elif (self._sampler == "MetropolisHop"):
+            sa = nk.sampler.MetropolisHop(machine=ma, d_max=self._d_max)
+
+        if (self._optimizer == "AdaMax"):
+            opt = nk.optimizer.AdaMax(alpha=self._alpha, beta1=self._beta1, beta2=self._beta2, epscut=self._epscut)
+        elif (self._optimizer == "AmsGrad"):
+            opt = nk.optimizer.AmsGrad(learning_rate=self._alpha, beta1=self._beta1, beta2=self._beta2,
+                                       epscut=self._epscut)
+
+        gs = nk.variational.Vmc(hamiltonian=hamilton,
+                                sampler=sa,
+                                optimizer=opt,
+                                n_samples=self._n_samples,
+                                use_iterative=self._use_iterative,
+                                use_cholesky=self._use_cholesky,
+                                method=self._method,
+                                diag_shift=self._diag_shift,
+                                discarded_samples=self._discarded_samples,
+                                discarded_samples_on_init=self._discarded_samples_on_init,
+                                target=self._target)
+
+        start_time = time.time()
+        gs.run(output_prefix=self.folder + "/" + self.file_name[:-3], n_iter=self._n_iter)
+        end_time = time.time()
+
+        with open(self.folder + "/" + self.file_name[:-3] + ".log", "a") as f:
+            f.write("\n")
+            json.dump(self.input_dict, f)
+            f.write("\nduration: " + str(start_time - end_time))
+
+        os.remove(self.folder + "/" + self.file_name[:-3] + ".ip" )
 
     @staticmethod
     def load_from_File(file):
