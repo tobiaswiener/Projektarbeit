@@ -104,14 +104,15 @@ class specs_runnable:
         start_time = time.time()
         gs.run(output_prefix=self.folder + "/" + self.file_name[:-3], n_iter=self._n_iter)
         end_time = time.time()
-
         with open(self.folder + "/" + self.file_name[:-3] + ".log", "a") as f:
             f.write("\n")
             json.dump(self.input_dict, f)
             f.write("\nduration: " + str(start_time - end_time))
 
-        os.remove(self.folder + "/" + self.file_name[:-3] + ".ip" )
-
+        try:
+            os.remove(self.folder + "/" + self.file_name)
+        except FileNotFoundError as err:
+            print(err.filename)
     @staticmethod
     def file_to_dict(file_name: str, folder: str) -> dict:
         with open(folder + "/" + file_name) as f:
