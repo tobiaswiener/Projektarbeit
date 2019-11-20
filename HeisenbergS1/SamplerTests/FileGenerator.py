@@ -30,18 +30,18 @@ _epscut=[1e-07]
 
 """Sampler"""
 _sampler = ["MetropolisLocal","MetropolisHop"]
-_d_max = [1,2,3,4,5]
+_d_max = [1,5,30]
 
 """VMC"""
-_discarded_samples = [-1]
+_discarded_samples = [-1,100]
 _discarded_samples_on_init = [0]
-_method = ["Gd"]
+_method = ["Gd","Sr"]
 _n_samples = [1000]
 _diag_shift = [0.01]
-_use_iterative = [False]
+_use_iterative = [False,True]
 _use_cholesky = [True]
 _target = ["energy"]
-_n_iter = [1]
+_n_iter = [1000]
 
 
 

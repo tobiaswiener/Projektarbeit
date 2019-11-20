@@ -1,5 +1,5 @@
 import SamplerTests.load as load
-
+import netket as nk
 
 FOLDER = "SamplerTests/ersteTests"
 
@@ -8,7 +8,6 @@ def main1():
 def Folder():
 
     load.specs_runnable.run_all_files(FOLDER)
-
 
 if __name__ == "__main__":
     Folder()
