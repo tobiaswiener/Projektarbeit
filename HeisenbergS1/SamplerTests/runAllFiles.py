@@ -4,6 +4,7 @@ import build
 import json
 import os
 import load
+import time
 
 def run_it(filename):
     """build Graph, Hilbert Space and Hamiltonian"""
@@ -51,14 +52,18 @@ def run_it(filename):
                                     discarded_samples_on_init=todo._discarded_samples_on_init,
                                     target=todo._target)
 
-    gs.run(output_prefix=filename[:-3], n_iter=todo._n_iter)
 
+    start_time = time.time()
+    gs.run(output_prefix=filename[:-3], n_iter=todo._n_iter)
+    end_time =time.time()
 
     with open(filename[:-3]+".log","a") as f:
         f.write("\n")
         json.dump(data,f)
+        f.write("\nduration: "+str(start_time-end_time))
 
     os.remove(filename)
+
 
 def main():
     directory = "ersteTests"
