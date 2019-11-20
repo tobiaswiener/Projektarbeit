@@ -50,6 +50,7 @@ _n_iter = [1000]
 
 
 def create():
+    """Creates .ip Files out of the specifications above"""
     all_comb = itertools.product(_L, _J, _sampler, _numberHiddenLayers, _factorNeurons, _actFunc,
                                  _optimizer, _alpha, _beta1, _beta2, _epscut, _discarded_samples,
                                  _discarded_samples_on_init, _method, _n_samples, _diag_shift, _use_iterative,

@@ -7,6 +7,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import os
+from typing import List
 
 
 
@@ -17,31 +19,9 @@ def is_json(myjson):
     return False
   return True
 
-def plotFromLogFile(filename):
-    data=json.load(open(filename))
-    exact_gs_energy = -34.46969272725688
 
-# Extract the relevant information
-    iters_Jastrow=[]
-    energy_Jastrow=[]
-
-    for iteration in data["Output"]:
-        iters_Jastrow.append(iteration["Iteration"])
-        energy_Jastrow.append(iteration["Energy"]["Mean"])
-
-    fig, ax1 = plt.subplots()
-    ax1.plot(iters_Jastrow, energy_Jastrow, color='C8', label=filename)
-    ax1.set_ylabel('Energy')
-    ax1.set_xlabel('Iteration')
-    #plt.axis([0,iters_Jastrow[-1],exact_gs_energy-1,exact_gs_energy+10])
-    #plt.axhline(y=exact_gs_energy, xmin=0,
-    #             xmax=iters_Jastrow[-1], linewidth=2, color='k', label='Exact')
-    plt.axis([0, iters[-1], -130, 70])
-    ax1.legend()
-    plt.show()
-
-
-def SubPlotFromFile(filenameList, folder=""):
+def SubPlotFromFile(filenameList: List[str], folder: str):
+    """plots"""
 
     N = len(filenameList)
 
@@ -76,7 +56,6 @@ def SubPlotFromFile(filenameList, folder=""):
         ax1.set_ylabel('Energy')
         ax1.set_xlabel('Iteration')
         ax1.xaxis.set_visible(True)
-        print(iters)
         plt.axis([0, iters[-1], -130, 70])
         #plt.axis([0, iters[-1], exact_gs_energy - 1, exact_gs_energy + 50])
         #plt.axhline(y=exact_gs_energy, xmin=0,
@@ -85,3 +64,10 @@ def SubPlotFromFile(filenameList, folder=""):
 
     plt.show()
 
+def plot_Folder(folder: str):
+    """Plots all .log Files from a Folder in different subplots"""
+    filenameList = []
+    for filename in os.listdir(folder+"/"):
+        if filename.endswith(".log"):
+            filenameList.append(filename)
+    SubPlotFromFile(filenameList, folder+"/")
