@@ -12,7 +12,13 @@ from typing import List
 
 
 
-def is_json(myjson):
+
+Y_MIN = -130
+Y_MAX = 70
+FONT_SIZE = 5
+
+
+def is_json(myjson: str):
   try:
     json_object = json.loads(myjson)
   except ValueError as e:
@@ -20,28 +26,54 @@ def is_json(myjson):
   return True
 
 
-def SubPlotFromFile(filenameList: List[str], folder: str):
-    """plots"""
+def plot_file(file_name: str, folder:str):
+    data = []
+    with open(folder + "/" + file_name) as f:
+        line = f.readlines()
+    for line in line:
+        try:
+            b = json.loads(line[0:len(line) - 2])
+            data.append(b)
+        except ValueError as e:
+            pass
 
-    N = len(filenameList)
+    iterations = []
+    energy = []
+    for iteration in data:
+        iterations.append(iteration["Iteration"])
+        energy.append(iteration["Energy"]["Mean"])
+    plt.rcParams.update({'font.size': FONT_SIZE})
 
-    for counter, name in enumerate(filenameList):
+    plt.plot(iterations, energy, color='C8', label=file_name)
+    plt.title(file_name)
+    plt.ylabel('Energy')
+    plt.xlabel('Iteration')
+    plt.axis([0, iterations[-1], Y_MIN, Y_MAX])
+    plt.show()
+
+
+
+def plot_all_log_file_from_folder(folder: str):
+    filename_list = []
+    for filename in os.listdir(folder + "/"):
+        if filename.endswith(".log"):
+            filename_list.append(filename)
+
+    number_plots = len(filename_list)
+
+    for counter, name in enumerate(filename_list):
         data = []
-        with open(folder + name) as f:
-            print(folder + name)
-            a = f.readlines()
-        for line in a:
+        with open(folder + "/" + name) as f:
+            line = f.readlines()
+        for line in line:
             try:
-                b = json.loads(line[0:len(line)-2])
+                b = json.loads(line[0:len(line) - 2])
                 data.append(b)
             except ValueError as e:
                 pass
 
-
-
-
-        w = math.floor(math.sqrt(N + 1)) + 1
-        d = math.floor(math.sqrt(N + 1)) + 1
+        num_plots_horizontal = math.floor(math.sqrt(number_plots + 1)) + 1
+        num_plots_vertical = math.floor(math.sqrt(number_plots + 1)) + 1
 
         iters = []
         energy = []
@@ -49,25 +81,14 @@ def SubPlotFromFile(filenameList: List[str], folder: str):
             iters.append(iteration["Iteration"])
             energy.append(iteration["Energy"]["Mean"])
         plt.rcParams.update({'font.size': 5})
-        ax1 = plt.subplot(w, d, counter + 1)
+        ax1 = plt.subplot(num_plots_horizontal, num_plots_vertical, counter + 1)
 
         plt.plot(iters, energy, color='C8', label=name)
         plt.title(name)
         ax1.set_ylabel('Energy')
         ax1.set_xlabel('Iteration')
         ax1.xaxis.set_visible(True)
-        plt.axis([0, iters[-1], -130, 70])
-        #plt.axis([0, iters[-1], exact_gs_energy - 1, exact_gs_energy + 50])
-        #plt.axhline(y=exact_gs_energy, xmin=0,
-        #            xmax=iters[-1], linewidth=2, color='k', label='Exact')
+        plt.axis([0, iters[-1], Y_MIN, Y_MAX])
 
 
     plt.show()
-
-def plot_Folder(folder: str):
-    """Plots all .log Files from a Folder in different subplots"""
-    filenameList = []
-    for filename in os.listdir(folder+"/"):
-        if filename.endswith(".log"):
-            filenameList.append(filename)
-    SubPlotFromFile(filenameList, folder+"/")
