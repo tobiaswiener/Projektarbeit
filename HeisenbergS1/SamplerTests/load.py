@@ -127,3 +127,7 @@ class specs_runnable:
                 todo.run_spec()
             else:
                 continue
+
+    @staticmethod
+    def run_file(folder: str, file_name: str):
+        specs_runnable(file_name,folder).run_spec()
