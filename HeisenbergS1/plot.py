@@ -8,6 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
+
+
 def is_json(myjson):
   try:
     json_object = json.loads(myjson)
@@ -57,7 +59,7 @@ def SubPlotFromFile(filenameList, folder=""):
 
 
 
-        exact_gs_energy = -34.46969272725688
+
         w = math.floor(math.sqrt(N + 1)) + 1
         d = math.floor(math.sqrt(N + 1)) + 1
 
