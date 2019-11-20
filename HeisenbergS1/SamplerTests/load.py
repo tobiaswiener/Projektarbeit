@@ -113,11 +113,10 @@ class specs_runnable:
         os.remove(self.folder + "/" + self.file_name[:-3] + ".ip" )
 
     @staticmethod
-    def load_from_File(file):
-        with open (file) as f:
-            data = json.load(f)
-        return data
-
+    def file_to_dict(file_name: str, folder: str) -> dict:
+        with open(folder + "/" + file_name) as f:
+            input_dict = json.load(f)
+        return input_dict
 
 
     @staticmethod
