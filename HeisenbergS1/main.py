@@ -1,65 +1,12 @@
-import netket as nk
-import numpy as np
-import csv
-import build
-import FFNN
-import exactDiag
-import RBM
+import SamplerTests.load as load
 
-J = 1
-ED = False
-FFNeuralNet = True
-RestrictedBM = False
 
-testing = True
 
-if(testing):
-    machine = ["Jastrow","JastrowSymm","FFNN", "RbmSpin", "RmbSpinSymm"]
-    sampler = ["MetropolisHop"]
-    optimizer = ["AdaMax"]
-    methode = ["Gd"]
-    #n_samples = [1000]
-    f_samples = [150,200]
-    n_iterations = [2000]
-    nhlayer = [3]
-    fneuron =[7]
-    L = [30]
-    folder = "6/"
-else:
-    machine = ["Jastrow", "JastrowSymm", "FFNN", "RbmSpin", "RmbSpinSymm"]
-    sampler = ["ExactSampler", "MetropolisExchange", "MetropolisExchangePt",
-               "MetropolisLocal", "MetropolisLocalPt", "MetropolisHamiltonian",
-               "MetropolisHamiltonianPt", "MetropolisHop"]
-    optimizer = ["Sgd", "RmsProp", "Momentum", "AmsGrad", "AdaMax", "AdaGrad", "AdaDelta"]
-    methode = ["Gd", "Sr"]
-    n_samples = [1000, 2000]
-    n_iterations = [500, 1000]
-    nhlayer = [1, 2]
-    fneuron = [3]
 
-names = [[] for _ in range(2)]
+def main():
+    folder = "SamplerTests/ersteTests"
+    load.specs_runnable.run_all_files(folder)
 
-if(FFNeuralNet):
-    for l in L:
-        for s in sampler:
-            for o in optimizer:
-                for nhl in nhlayer:
-                    for fn in fneuron:
-                        for f in f_samples:
-                            for m in methode:
-                                for ni in n_iterations:
-                                    graph, hilbert, hamilton = build.generateNN(length=l, coupling=J)
-                                    name, time = FFNN.runFFNN(graph=graph, hilbert=hilbert, hamilton=hamilton, sampler=s,opti=o, nhlayers=nhl, fneurons= fn , nsamples=f*l, methode=m, niter=ni,folder=folder)
-                                    names[0].append(name)
-                                    names[1].append(time)
-                                    with open("times.csv","a",newline="") as myfile:
-                                        myfile.write(str(name)+": "+ str(time)+"\n")
-graph, hilbert, hamilton = build.generateNN(length=12, coupling=J)
-if(ED):
-    gs_energy_exact = exactDiag.Lanczos(graph=graph, ha=hamilton)
-if(RestrictedBM):
-    RBM.runRBM(graph,hilbert,hamilton)
 
-# with open("times.csv", 'w', newline='') as myfile:
-#     wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
-#     wr.writerow(names)
+if __name__ == "__main__":
+    main()
