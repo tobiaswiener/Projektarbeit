@@ -109,3 +109,54 @@ def plot_all_log_file_from_folder(folder: str):
 
 
     plt.show()
+
+
+def plot_folder_in_same_plot(folder: str):
+    filename_list = []
+    for filename in os.listdir(folder + "/"):
+        if filename.endswith(".log"):
+            filename_list.append(filename)
+
+    number_plots = len(filename_list)
+    all_iters = []
+    all_energy = []
+    all_names = []
+    for counter, name in enumerate(filename_list):
+        all_names.append(name)
+        data = []
+        input = load.specs_runnable.log_to_input(folder=folder,file_name=name)
+        try:
+            L = input["input"]["L"]
+        except KeyError:
+            print(name + " is not yet finished")
+        exact_gs_energy = EXACT_ENERGY_PER_SITE_L_INFINTY*L
+        with open(folder + "/" + name) as f:
+            line = f.readlines()
+        for line in line:
+            try:
+                b = json.loads(line[0:len(line) - 2])
+                data.append(b)
+            except ValueError as e:
+                pass
+
+        iters = []
+        energy = []
+
+        for iteration in data:
+            iters.append(iteration["Iteration"])
+            energy.append(iteration["Energy"]["Mean"])
+        plt.plot(iters, energy, label=name)
+        all_iters.append(iters)
+        all_energy.append(energy)
+        all_names.append(name)
+    plt.rcParams.update({'font.size': 5})
+    plt.axhline(y=exact_gs_energy, xmin=0,
+                xmax=iters[-1], linewidth=2, color='k', label='Exact')
+    #plt.plot(iters,np.zeros_like(iters))
+    plt.title(name)
+    plt.ylabel('Energy')
+    plt.xlabel('Iteration')
+    plt.axis([0, iters[-1], Y_MIN, Y_MAX])
+
+    plt.legend()
+    plt.show()
