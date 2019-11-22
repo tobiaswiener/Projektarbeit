@@ -13,7 +13,7 @@ except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [30]
+_L = [20]
 _J = [1]
 _numberHiddenLayers = [3]
 _factorNeurons = [7]
@@ -29,17 +29,18 @@ _beta2=[0.999]
 _epscut=[1e-07]
 
 """Sampler"""
-_sampler = ["MetropolisLocal","MetropolisHop"]
+_sampler = ["MetropolisHop"]    #["MetropolisLocal","MetropolisHop"]
 _d_max = [1,5,30]
 
+
 """VMC"""
-_discarded_samples = [-1,100]
+_discarded_samples = [-1,200]
 _discarded_samples_on_init = [0]
-_method = ["Gd","Sr"]
+_method = ["Gd"]                #["Gd","Sr"]
 _n_samples = [1000]
 _diag_shift = [0.01]
-_use_iterative = [False,True]
-_use_cholesky = [True]
+_use_iterative = [False]   #[False,True]
+_use_cholesky = [False]         #[False,True]
 _target = ["energy"]
 _n_iter = [1000]
 
