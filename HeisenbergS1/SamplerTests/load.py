@@ -100,21 +100,25 @@ class specs_runnable:
                                 discarded_samples=self._discarded_samples,
                                 discarded_samples_on_init=self._discarded_samples_on_init,
                                 target=self._target)
+        try:
+            start_time = time.time()
+            gs.run(output_prefix=self.folder + "/" + self.file_name[:-3], n_iter=self._n_iter)
+            end_time = time.time()
 
-        start_time = time.time()
-        gs.run(output_prefix=self.folder + "/" + self.file_name[:-3], n_iter=self._n_iter)
-        end_time = time.time()
+            if (nk._C_netket.MPI.rank() == 0):
+                with open(self.folder + "/" + self.file_name[:-3] + ".log", "a") as f:
+                    f.write("\n")
+                    json.dump(self.input_dict, f)
+                    f.write("\nduration: " + str(start_time - end_time))
 
-        if (nk._C_netket.MPI.rank() == 0):
-            with open(self.folder + "/" + self.file_name[:-3] + ".log", "a") as f:
-                f.write("\n")
-                json.dump(self.input_dict, f)
-                f.write("\nduration: " + str(start_time - end_time))
+                try:
+                    os.remove(self.folder + "/" + self.file_name)
+                except FileNotFoundError as err:
+                    print(err.filename)
+        except:
+            print(self.folder + "/" + self.file_name + "failed")
 
-            try:
-                os.remove(self.folder + "/" + self.file_name)
-            except FileNotFoundError as err:
-                print(err.filename)
+
 
     @staticmethod
     def file_to_dict(file_name: str, folder: str) -> dict:
