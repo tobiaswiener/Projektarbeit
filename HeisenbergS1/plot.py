@@ -15,7 +15,7 @@ from typing import List
 
 
 Y_MIN_From_Exact = -1
-Y_MAX_From_Exact = 10
+Y_MAX_From_Exact = 30
 FONT_SIZE = 5
 EXACT_ENERGY_PER_SITE_L_INFINTY =  -1.401484038970
 
@@ -111,7 +111,8 @@ def plot_all_log_file_from_folder(folder: str):
     plt.show()
 
 
-def plot_folder_in_same_plot(folder: str):
+def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","machine","sampler","optimizer","VMC"]
+
     filename_list = []
     for filename in os.listdir(folder + "/"):
         if filename.endswith(".log"):
@@ -121,12 +122,21 @@ def plot_folder_in_same_plot(folder: str):
     all_iters = []
     all_energy = []
     all_names = []
+    L = -1
+    machine = "machine"
+    sampler = "sampler"
+    optimizer = "optimizer"
+    VMC = "VMC"
     for counter, name in enumerate(filename_list):
         all_names.append(name)
         data = []
         input = load.specs_runnable.log_to_input(folder=folder,file_name=name)
         try:
             L = input["input"]["L"]
+            machine = input["input"]["machine"]
+            sampler = input["input"]["sampler"]
+            optimizer = input["input"]["optimizer"]
+            VMC = input["input"]["VMC"]
         except KeyError:
             print(name + " is not yet finished")
 
@@ -147,7 +157,17 @@ def plot_folder_in_same_plot(folder: str):
         for iteration in data:
             iters.append(iteration["Iteration"])
             energy.append(iteration["Energy"]["Mean"])
-        plt.plot(iters, energy, label=name)
+        if label == "name":
+            plt.plot(iters, energy, label=name)
+        elif label == "machine":
+            plt.plot(iters, energy, label=machine)
+        elif label == "sampler":
+            plt.plot(iters, energy, label=sampler)
+        elif label == "optimizer":
+            plt.plot(iters, energy, label=optimizer)
+        elif label == "VMC":
+            plt.plot(iters, energy, label=VMC)
+
         all_iters.append(iters)
         all_energy.append(energy)
         all_names.append(name)

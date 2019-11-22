@@ -6,7 +6,7 @@ import itertools
 import os
 
 
-directory = "TestsForNumberSamplesL10"
+directory = "TestsForCholeskyDiagShiftAndMethod"
 try:
     os.mkdir(directory)
 except(FileExistsError):
@@ -36,11 +36,11 @@ _d_max = [5]
 """VMC"""
 _discarded_samples = [100]
 _discarded_samples_on_init = [0]
-_method = ["Gd"]                #["Gd","Sr"]
-_n_samples = [100,500,1000,5000,10000]
-_diag_shift = [0.01]
-_use_iterative = [False]   #[False,True]
-_use_cholesky = [False]         #[False,True]
+_method = ["Gd","Sr"]                #["Gd","Sr"]
+_n_samples = [100]
+_diag_shift = [0.01,1,0.1,0.001,0.0001,0.00001,10]
+_use_iterative = [False,True]   #[False,True]
+_use_cholesky = [False,True]         #[False,True]
 _target = ["energy"]
 _n_iter = [100]
 
