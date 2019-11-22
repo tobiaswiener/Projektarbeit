@@ -23,6 +23,7 @@ class specs_runnable:
         """variables to specify"""
         self._L = input["L"]
         self._J = input["J"]
+        #self._seed = input["seed"]
 
         """Network"""
         self._numberHiddenLayers = input["machine"]["numberHiddenLayers"]
@@ -75,7 +76,7 @@ class specs_runnable:
         layers = tuple(layers)  # layers must be tuple
 
         for layer in layers:
-            layer.init_random_parameters(seed=12345, sigma=0.01)
+            layer.init_random_parameters(seed=543164684, sigma=0.01)
         ma = nk.machine.FFNN(hilbert, layers)
 
         if (self._sampler == "MetropolisLocal"):

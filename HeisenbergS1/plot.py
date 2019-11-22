@@ -127,6 +127,7 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
     sampler = "sampler"
     optimizer = "optimizer"
     VMC = "VMC"
+    seed = 0
     for counter, name in enumerate(filename_list):
         all_names.append(name)
         data = []
@@ -137,6 +138,7 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
             sampler = input["input"]["sampler"]
             optimizer = input["input"]["optimizer"]
             VMC = input["input"]["VMC"]
+            seed = input["input"]["seed"]
         except KeyError:
             print(name + " is not yet finished")
 
@@ -167,6 +169,8 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
             plt.plot(iters, energy, label=optimizer)
         elif label == "VMC":
             plt.plot(iters, energy, label=VMC)
+        elif label == "seed":
+            plt.plot(iters, energy, label=seed)
 
         all_iters.append(iters)
         all_energy.append(energy)
