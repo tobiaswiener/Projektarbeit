@@ -1,5 +1,9 @@
 import netket as nk
 
+
+
+
+
 def Lanczos(graph, ha):
     L = graph.n_sites
     exact_result = nk.exact.lanczos_ed(ha, first_n=1, compute_eigenvectors=False)

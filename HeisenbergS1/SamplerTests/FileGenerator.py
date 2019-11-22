@@ -6,7 +6,7 @@ import itertools
 import os
 
 
-directory = "TestsForNetworkSize"
+directory = "TestsForNumberSamplesL10"
 try:
     os.mkdir(directory)
 except(FileExistsError):
@@ -16,13 +16,13 @@ except(FileExistsError):
 _L = [10]
 _J = [1]
 _numberHiddenLayers = [3]
-_factorNeurons = [3,5,7,9,12]
+_factorNeurons = [3]
 _actFunc = ["tanh"]
 
 
 
 """Optimizer"""
-_optimizer = ["AdaMax","AmsGrad"]
+_optimizer = ["AdaMax"]
 _alpha=[0.001]
 _beta1=[0.9]
 _beta2=[0.999]
@@ -37,12 +37,12 @@ _d_max = [5]
 _discarded_samples = [100]
 _discarded_samples_on_init = [0]
 _method = ["Gd"]                #["Gd","Sr"]
-_n_samples = [1000]
+_n_samples = [100,500,1000,5000,10000]
 _diag_shift = [0.01]
 _use_iterative = [False]   #[False,True]
 _use_cholesky = [False]         #[False,True]
 _target = ["energy"]
-_n_iter = [200]
+_n_iter = [100]
 
 
 
