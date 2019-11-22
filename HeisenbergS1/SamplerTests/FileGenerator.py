@@ -6,17 +6,17 @@ import itertools
 import os
 
 
-directory = "ersteTests"
+directory = "TestsForNetworkSize"
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [20]
+_L = [10]
 _J = [1]
 _numberHiddenLayers = [3]
-_factorNeurons = [7]
+_factorNeurons = [3,5,7,9,12]
 _actFunc = ["tanh"]
 
 
@@ -30,11 +30,11 @@ _epscut=[1e-07]
 
 """Sampler"""
 _sampler = ["MetropolisHop"]    #["MetropolisLocal","MetropolisHop"]
-_d_max = [1,5,30]
+_d_max = [5]
 
 
 """VMC"""
-_discarded_samples = [-1,200]
+_discarded_samples = [100]
 _discarded_samples_on_init = [0]
 _method = ["Gd"]                #["Gd","Sr"]
 _n_samples = [1000]
@@ -42,7 +42,7 @@ _diag_shift = [0.01]
 _use_iterative = [False]   #[False,True]
 _use_cholesky = [False]         #[False,True]
 _target = ["energy"]
-_n_iter = [1000]
+_n_iter = [200]
 
 
 
@@ -50,7 +50,7 @@ _n_iter = [1000]
 
 
 
-def create():
+def create_ip():
     """Creates .ip Files out of the specifications above"""
     all_comb = itertools.product(_L, _J, _sampler, _numberHiddenLayers, _factorNeurons, _actFunc,
                                  _optimizer, _alpha, _beta1, _beta2, _epscut, _discarded_samples,
@@ -95,4 +95,4 @@ def create():
         with open(filename, 'w') as outfile:
             json.dump(dicc, outfile)
 
-create()
+create_ip()
