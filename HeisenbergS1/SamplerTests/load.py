@@ -115,7 +115,7 @@ class specs_runnable:
                 os.remove(self.folder + "/" + self.file_name)
             except FileNotFoundError as err:
                 print(err.filename)
-                
+
     @staticmethod
     def file_to_dict(file_name: str, folder: str) -> dict:
         with open(folder + "/" + file_name) as f:
@@ -135,3 +135,13 @@ class specs_runnable:
     @staticmethod
     def run_file(folder: str, file_name: str):
         specs_runnable(file_name,folder).run_spec()
+
+    @staticmethod
+    def log_to_input(folder: str, file_name: str) -> dict:
+
+        with open(folder + "/" + file_name) as f:
+            lines = []
+            for line in f:
+                lines.append(line)
+                pass
+        return json.loads(lines[-2])
