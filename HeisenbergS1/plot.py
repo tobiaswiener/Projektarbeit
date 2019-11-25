@@ -149,8 +149,8 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
         exact_gs_energy_infinty = EXACT_ENERGY_PER_SITE_L_INFINTY*L
         exact_gs_energy_L10 = EXACT_ENERGY_LANCZOS_L10*L
         with open(folder + "/" + name) as f:
-            line = f.readlines()
-        for line in line:
+            lines = f.readlines()
+        for line in lines:
             try:
                 b = json.loads(line[0:len(line) - 2])
                 data.append(b)
