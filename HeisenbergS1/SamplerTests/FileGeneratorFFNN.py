@@ -18,7 +18,9 @@ _J = [1]
 
 _seed = [12345]
 _model = [
-        [2,["tanh"]]
+        [10,["tanh","tanh","tanh"]],
+        [15,["tanh","tanh","tanh"]],
+        [6, ["tanh", "tanh", "tanh"]]
         ]
 
 
@@ -44,7 +46,7 @@ _diag_shift = [0.01]
 _use_iterative = [False]   #[False,True]
 _use_cholesky = [False]         #[False,True]
 _target = ["energy"]
-_n_iter = [50000]
+_n_iter = [5000]
 
 
 
