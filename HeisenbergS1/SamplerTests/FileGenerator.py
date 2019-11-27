@@ -68,7 +68,7 @@ _diag_shift = [0.01]
 _use_iterative = [False]   #[False,True]
 _use_cholesky = [False]         #[False,True]
 _target = ["energy"]
-_n_iter = [5000]
+_n_iter = [1]
 
 
 
@@ -113,11 +113,13 @@ def create_ip():
 
         n = 1
         filename = directory + "/" + str(dicc["input"]["L"]) + "_" + "FFNN" + "_" + str(dicc["input"]["optimizer"]["type"]) + "_" + str(dicc["input"]["sampler"]["type"]) + str(n) + '.ip'
+        filenamelog = directory + "/" + str(dicc["input"]["L"]) + "_" + "FFNN" + "_" + str(dicc["input"]["optimizer"]["type"]) + "_" + str(dicc["input"]["sampler"]["type"]) + str(n) + '.log'
 
-        while (os.path.isfile(filename)):
+        while (os.path.isfile(filename) or os.path.isfile(filenamelog)):
 
             n += 1
             filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[4] + "_"  + i[2] + str(n) + '.ip'
+            filenamelog = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[4] + "_"  + i[2] + str(n) + '.log'
 
         with open(filename, 'w') as outfile:
             json.dump(dicc, outfile)
