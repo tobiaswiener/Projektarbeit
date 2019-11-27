@@ -6,7 +6,7 @@ import itertools
 import os
 
 
-directory = "SizeOfNetworkTests"
+directory = "ersteTests"
 try:
     os.mkdir(directory)
 except(FileExistsError):
