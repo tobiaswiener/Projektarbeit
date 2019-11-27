@@ -1,7 +1,7 @@
 import SamplerTests.load as load
 import netket as nk
 
-FOLDER = "SamplerTests/ersteTests"
+FOLDER = "SamplerTests/MPSTests"
 FILE = ""
 def main1():
     load.specs_runnable.run_file(FOLDER,FILE)

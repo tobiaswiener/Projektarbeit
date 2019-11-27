@@ -5,12 +5,12 @@ import netket as nk
 import time
 import os
 
-class specs_runnable:
+class specs_runnable_MPS:
 
     def __init__(self,file_name:str, folder:str):
 
 
-        self.input_dict = specs_runnable.file_to_dict(file_name, folder)
+        self.input_dict = specs_runnable_MPS.file_to_dict(file_name, folder)
 
 
         self.file_name = file_name
@@ -25,16 +25,8 @@ class specs_runnable:
         self._J = input["J"]
         #self._seed = input["seed"]
 
-        """machine"""
-        if(input["machine"]["type"]=="FFNN"):
-            self._machine = "FFNN"
-            self._model = input["machine"]["model"]
-        elif(input["machine"]["type"]=="MPS"):
-            self._machine = "MPS"
-            self._BondDim = input["machine"]["BondDim"]
-            self._SymmetryPeriod = input["machine"]["SymmetryPeriod"]
-            self._SigmaRand= input["machine"]["SigmaRand"]
-            self._Diagonal= input["machine"]["Diagonal"]
+        """Network"""
+        self._model = input["machine"]["model"]
 
 
 
@@ -70,13 +62,15 @@ class specs_runnable:
 
 
 
-    def run_FNNN(self):
+
+    def run_spec(self):
         graph, hilbert, hamilton = build.generateNN(length=self._L, coupling=self._J)
 
         layers = []
 
         layers.append(
             nk.layer.FullyConnected(input_size=self._L, output_size=int(self._model[0] * self._L), use_bias=True))
+
 
         for layer in self._model[1]:
             if (layer == "tanh"):
@@ -85,6 +79,7 @@ class specs_runnable:
                 layers.append(nk.layer.Lncosh(input_size=int(self._model[0] * self._L)))
             elif (layer == "Relu"):
                 layers.append(nk.layer.Relu(input_size=int(self._model[0] * self._L)))
+
 
         layers.append(nk.layer.SumOutput(input_size=int(self._model[0] * self._L)))
         layers = tuple(layers)  # layers must be tuple
@@ -132,62 +127,6 @@ class specs_runnable:
                     print(err.filename)
         except:
             print(self.folder + "/" + self.file_name + "failed")
-
-    def run_MPS(self):
-        graph, hilbert, hamilton = build.generateNN(length=self._L, coupling=self._J)
-
-        ma = nk.machine.MPSPeriodic(hilbert=hilbert,bond_dim=self._BondDim,diag=self._Diagonal,symperiod=self._SymmetryPeriod)
-
-
-
-        if (self._sampler == "MetropolisLocal"):
-            sa = nk.sampler.MetropolisLocal(machine=ma)
-        elif (self._sampler == "MetropolisHop"):
-            sa = nk.sampler.MetropolisHop(machine=ma, d_max=self._d_max)
-
-        if (self._optimizer == "AdaMax"):
-            opt = nk.optimizer.AdaMax(alpha=self._alpha, beta1=self._beta1, beta2=self._beta2, epscut=self._epscut)
-        elif (self._optimizer == "AmsGrad"):
-            opt = nk.optimizer.AmsGrad(learning_rate=self._alpha, beta1=self._beta1, beta2=self._beta2,
-                                       epscut=self._epscut)
-
-        gs = nk.variational.Vmc(hamiltonian=hamilton,
-                                sampler=sa,
-                                optimizer=opt,
-                                n_samples=self._n_samples,
-                                use_iterative=self._use_iterative,
-                                use_cholesky=self._use_cholesky,
-                                method=self._method,
-                                diag_shift=self._diag_shift,
-                                discarded_samples=self._discarded_samples,
-                                discarded_samples_on_init=self._discarded_samples_on_init,
-                                target=self._target)
-        try:
-            start_time = time.time()
-            gs.run(output_prefix=self.folder + "/" + self.file_name[:-3], n_iter=self._n_iter)
-            end_time = time.time()
-
-            if (nk._C_netket.MPI.rank() == 0):
-                with open(self.folder + "/" + self.file_name[:-3] + ".log", "a") as f:
-                    f.write("\n")
-                    json.dump(self.input_dict, f)
-                    f.write("\nduration: " + str(start_time - end_time))
-
-                try:
-                    os.remove(self.folder + "/" + self.file_name)
-                except FileNotFoundError as err:
-                    print(err.filename)
-        except:
-            print(self.folder + "/" + self.file_name + "failed")
-
-
-
-    def run_spec(self):
-        if(self._machine == "FFNN"):
-            self.run_FNNN()
-        elif(self._machine == "MPS"):
-            self.run_MPS()
-
 
 
 
