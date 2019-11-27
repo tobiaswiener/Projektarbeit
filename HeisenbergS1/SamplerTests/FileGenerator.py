@@ -6,7 +6,7 @@ import itertools
 import os
 
 
-directory = "ersteTests"
+directory = "TestsFileNumber"
 try:
     os.mkdir(directory)
 except(FileExistsError):
@@ -85,11 +85,11 @@ def create():
 
         n = 1
         filename = directory + "/" + str(dicc["input"]["L"]) + "_" + "FFNN" + "_" + str(dicc["input"]["optimizer"]["type"]) + "_" + str(dicc["input"]["sampler"]["type"]) + str(n) + '.ip'
-
-        while (os.path.isfile(filename)):
-
+        filenamelog = directory + "/" + str(dicc["input"]["L"]) + "_" + "FFNN" + "_" + str(dicc["input"]["optimizer"]["type"]) + "_" + str(dicc["input"]["sampler"]["type"]) + str(n) + '.log'
+        while (os.path.isfile(filename) or os.path.isfile(filenamelog)):
             n += 1
             filename = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[6] + "_"  + i[2] + str(n) + '.ip'
+            filenamelog = directory + "/" + str(i[0]) + "_" + "FFNN" + "_" + i[6] + "_"  + i[2] + str(n) + '.ip'
 
         with open(filename, 'w') as outfile:
             json.dump(dicc, outfile)
