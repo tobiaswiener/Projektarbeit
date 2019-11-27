@@ -6,7 +6,7 @@ import itertools
 import os
 
 
-directory = "MPSTests"
+directory = "ClusterTests"
 try:
     os.mkdir(directory)
 except(FileExistsError):
