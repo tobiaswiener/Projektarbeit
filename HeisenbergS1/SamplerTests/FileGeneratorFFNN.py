@@ -6,21 +6,27 @@ import itertools
 import os
 
 
-directory = "ClusterTests"
+directory = "L30Tests"
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [10]
+_L = [30]
 _J = [1]
 
 _seed = [12345]
 _model = [
-        [10,["tanh","tanh","tanh"]],
-        [15,["tanh","tanh","tanh"]],
-        [6, ["tanh", "tanh", "tanh"]]
+        [5,["tanh","tanh"]],
+        [5,["tanh","tanh","tanh","tanh"]],
+        [5, ["tanh", "tanh", "tanh","tanh","tanh","tanh"]],
+        [10,["tanh","tanh"]],
+        [10,["tanh","tanh","tanh","tanh"]],
+        [10, ["tanh", "tanh", "tanh","tanh","tanh","tanh"]],
+        [15, ["tanh", "tanh"]],
+        [15, ["tanh", "tanh", "tanh", "tanh"]],
+        [15, ["tanh", "tanh", "tanh", "tanh", "tanh", "tanh"]]
         ]
 
 
