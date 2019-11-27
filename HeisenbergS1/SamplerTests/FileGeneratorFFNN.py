@@ -18,31 +18,7 @@ _J = [1]
 
 _seed = [12345]
 _model = [
-        [1,["tanh"]],
-        [1,["tanh","tanh",]],
-        [1,["tanh","tanh","tanh",]],
-        [1,["tanh","tanh","tanh","tanh"]],
-        [1,["tanh","tanh","tanh","tanh","tanh"]],
-        [1,["tanh"]],
-        [2,["tanh","tanh",]],
-        [2,["tanh","tanh","tanh",]],
-        [2,["tanh","tanh","tanh","tanh"]],
-        [2,["tanh","tanh","tanh","tanh","tanh"]],
-        [3, ["tanh"]],
-        [3, ["tanh", "tanh", ]],
-        [3, ["tanh", "tanh", "tanh", ]],
-        [3, ["tanh", "tanh", "tanh", "tanh"]],
-        [3, ["tanh", "tanh", "tanh", "tanh", "tanh"]],
-        [4, ["tanh"]],
-        [4, ["tanh", "tanh", ]],
-        [4, ["tanh", "tanh", "tanh", ]],
-        [4, ["tanh", "tanh", "tanh", "tanh"]],
-        [4, ["tanh", "tanh", "tanh", "tanh", "tanh"]],
-        [5, ["tanh"]],
-        [5, ["tanh", "tanh", ]],
-        [5, ["tanh", "tanh", "tanh", ]],
-        [5, ["tanh", "tanh", "tanh", "tanh"]],
-        [5, ["tanh", "tanh", "tanh", "tanh", "tanh"]]
+        [2,["tanh"]]
         ]
 
 
@@ -68,7 +44,7 @@ _diag_shift = [0.01]
 _use_iterative = [False]   #[False,True]
 _use_cholesky = [False]         #[False,True]
 _target = ["energy"]
-_n_iter = [1]
+_n_iter = [50000]
 
 
 
