@@ -10,6 +10,7 @@ numpy = "*"
 matplotlib = "*"
 netket = "*"
 pandas = "*"
+bitstring = "*"
 
 [requires]
 python_version = "3.7"
