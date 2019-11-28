@@ -109,6 +109,9 @@ class Individual:
                 f += 1
         return f
 
+    def act_fitness(self):
+        self.fitness = self.eval_fitness()
+
 
     @staticmethod
     def random_individual():
@@ -120,7 +123,7 @@ class Individual:
 
         return individual
 
-    def mutate(self, mut_prob = 0.001):
+    def mutate(self, mut_prob = 0.01):
         for i in range(BIT_LENGTH_CHROMOSOME):
             if(mut_prob > np.random.rand()):
                 self.genes[i] = not(self.genes[i])
@@ -211,6 +214,9 @@ class Population:
             mated, new1, new2 = Population.two_point_crossover(mating_pool[0],mating_pool[1])
             new_population.append(new1.mutate())
             new_population.append(new2.mutate())
+
+        for indiv in new_population:
+            indiv.act_fitness()
 
         self.individual_list = new_population
         self.generation += 1
