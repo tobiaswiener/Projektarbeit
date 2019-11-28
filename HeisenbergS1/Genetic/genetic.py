@@ -11,10 +11,14 @@ try:
 except(FileExistsError):
     pass
 
+_POPULATION_SIZE = 10
 
 _MAX_HIDDEN_LAYERS = 3
 _MAX_NEURONS_PER_LAYER = 8
 _ACTIVATION_FUNCTION = "tanh"
+
+
+
 
 """variables to specify"""
 _L = 30
@@ -42,7 +46,8 @@ _n_iter = 5000
 
 
 
-class Chromosome:
+
+class Individual:
 
     if(_MAX_NEURONS_PER_LAYER % 2 == 0):
         bit_length_per_layer = int(math.log2(_MAX_NEURONS_PER_LAYER))
@@ -53,20 +58,22 @@ class Chromosome:
     def __init__(self, genes:BitArray,generation:int):
         self.genes = genes
         self.generation = generation
+        self.f = np.random.randint(0,100)
+
 
     def give_layer(self, counter:int):
-        begin = counter * Chromosome.bit_length_per_layer
-        end = (counter+1)* Chromosome.bit_length_per_layer
+        begin = counter * Individual.bit_length_per_layer
+        end = (counter+1) * Individual.bit_length_per_layer
         layer = self.genes[begin:end].uint
         return layer
 
 
     def give_config_json(self):
-        config = [_ACTIVATION_FUNCTION,[]]
-        for i in range(_MAX_HIDDEN_LAYERS):
-            config[1].append(self.give_layer(i))
-        return config
-
+        # config = [_ACTIVATION_FUNCTION,[]]
+        # for i in range(_MAX_HIDDEN_LAYERS):
+        #     config[1].append(self.give_layer(i))
+        # return config
+        return 5
     def create_ip(self):
         _model = self.give_config_json()
         dicc = {
@@ -91,3 +98,74 @@ class Chromosome:
 
         with open(directory +"/"+filename, 'w') as outfile:
             json.dump(dicc, outfile)
+
+    def fitness(self):
+        return self.f
+
+
+    @staticmethod
+    def random_individual():
+        bit_string = ""
+        for _ in range(Individual.bit_length_chromosome):
+            bit_string += str(np.random.randint(0,2))
+
+        individual = Individual(BitArray("0b" + bit_string),0)
+
+        return individual
+
+
+
+
+
+class Population:
+
+    def __init__(self,population:[Individual]):
+        self.individual_list = population
+
+    @staticmethod
+    def random_population_list(pop_size:int):
+        list_individuals = []
+        for _ in range(pop_size):
+            list_individuals.append(Individual.random_individual())
+
+        return list_individuals
+    def give_fitness_list(self):
+        fitness_list = []
+        for indiv in self.individual_list:
+            fitness_list.append(indiv.fitness())
+        return fitness_list
+
+
+    def selection_roullete(self, mating_pool_size:int):
+        mating_pool = []
+        fitness_list = self.give_fitness_list()
+        fitness_sum = 0
+        for ind in fitness_list:
+            fitness_sum += ind
+
+        prob_list = []
+        for ind in fitness_list:
+            prob_list.append(ind/fitness_sum)
+
+        prob_commulativ = np.cumsum(np.array(prob_list))
+
+
+        for _ in range(mating_pool_size):
+            r = np.random.rand()
+            for i,qi in enumerate(prob_commulativ):
+                if(r <= qi):
+                    mating_pool.append(self.individual_list[i])
+                    break
+        print(fitness_list)
+        print(prob_list)
+        print(prob_commulativ)
+        for i in mating_pool:
+            print(i.fitness())
+        return mating_pool
+
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
