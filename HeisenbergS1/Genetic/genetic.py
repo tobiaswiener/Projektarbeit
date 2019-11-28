@@ -4,7 +4,7 @@ from bitstring import BitArray, BitStream, BitString
 import math
 import os
 import json
-
+import copy
 directory = "test"
 try:
     os.mkdir(directory)
@@ -53,7 +53,7 @@ class Individual:
         bit_length_per_layer = int(math.log2(_MAX_NEURONS_PER_LAYER))
     else:
         bit_length_per_layer = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
-    bit_length_chromosome = (bit_length_per_layer) *_MAX_HIDDEN_LAYERS
+    bit_length_chromosome = bit_length_per_layer *_MAX_HIDDEN_LAYERS
 
     def __init__(self, genes:BitArray,generation:int):
         self.genes = genes
@@ -164,8 +164,58 @@ class Population:
         return mating_pool
 
 
+    @staticmethod
+    def two_point_crossover(parent1:Individual, parent2:Individual, crossover: float):
+        length = parent1.bit_length_chromosome
+
+        parent_1_genes = parent1.genes
+        parent_2_genes = parent2.genes
+
+        if (crossover > np.random.rand()):
+            first = np.random.randint(0,length)
+            second = np.random.randint(0,length)
+
+            if(first > second):
+                temp = first
+                first = second
+                second = temp
+
+            p1 = [parent_1_genes[0:first],parent_1_genes[first:second],parent_1_genes[second:length]]
+            p2 = [parent_2_genes[0:first], parent_2_genes[first:second], parent_2_genes[second: length]]
+
+            genes_offspring_1 = p1[0]
+            genes_offspring_1.append(p2[1])
+            genes_offspring_1.append(p1[2])
+
+            genes_offspring_2 = p2[0]
+            genes_offspring_2.append(p1[1])
+            genes_offspring_2.append(p2[2])
+
+            return True, genes_offspring_1,genes_offspring_2
+        else:
+            return False, parent_1_genes, parent_2_genes
+
+
+
+
+
+
+
+
+
+
+
+
 def main():
-    pass
+    pop1 = Population(Population.random_population_list(10))
+    parent1 = pop1.individual_list[0]
+    parent2 = pop1.individual_list[2]
+    a, b, c = Population.two_point_crossover(parent1, parent2, 0.5)
+    print(parent1.genes)
+    print(parent2.genes)
+    print(a)
+    print(b)
+    print(c)
 
 if __name__ == "__main__":
     main()
