@@ -17,7 +17,11 @@ _MAX_HIDDEN_LAYERS = 3
 _MAX_NEURONS_PER_LAYER = 8
 _ACTIVATION_FUNCTION = "tanh"
 
-
+if(_MAX_NEURONS_PER_LAYER % 2 == 0):
+    BIT_LENGTH_PER_LAYER = int(math.log2(_MAX_NEURONS_PER_LAYER))
+else:
+    BIT_LENGTH_PER_LAYER = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
+BIT_LENGTH_CHROMOSOME = BIT_LENGTH_PER_LAYER *_MAX_HIDDEN_LAYERS
 
 
 """variables to specify"""
@@ -55,10 +59,9 @@ class Individual:
         bit_length_per_layer = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
     bit_length_chromosome = bit_length_per_layer *_MAX_HIDDEN_LAYERS
 
-    def __init__(self, genes:BitArray,generation:int):
+    def __init__(self, genes:BitArray):
         self.genes = genes
-        self.generation = generation
-        self.f = np.random.randint(0,100)
+        self.fitness = self.eval_fitness()
 
 
     def give_layer(self, counter:int):
@@ -99,8 +102,12 @@ class Individual:
         with open(directory +"/"+filename, 'w') as outfile:
             json.dump(dicc, outfile)
 
-    def fitness(self):
-        return self.f
+    def eval_fitness(self):
+        f = 0
+        for i in self.genes:
+            if(i):
+                f += 1
+        return f
 
 
     @staticmethod
@@ -109,9 +116,15 @@ class Individual:
         for _ in range(Individual.bit_length_chromosome):
             bit_string += str(np.random.randint(0,2))
 
-        individual = Individual(BitArray("0b" + bit_string),0)
+        individual = Individual(BitArray("0b" + bit_string))
 
         return individual
+
+    def mutate(self, mut_prob = 0.001):
+        for i in range(BIT_LENGTH_CHROMOSOME):
+            if(mut_prob > np.random.rand()):
+                self.genes[i] = not(self.genes[i])
+        return self
 
 
 
@@ -121,6 +134,7 @@ class Population:
 
     def __init__(self,population:[Individual]):
         self.individual_list = population
+        self.generation = 0
 
     @staticmethod
     def random_population_list(pop_size:int):
@@ -132,7 +146,7 @@ class Population:
     def give_fitness_list(self):
         fitness_list = []
         for indiv in self.individual_list:
-            fitness_list.append(indiv.fitness())
+            fitness_list.append(indiv.fitness)
         return fitness_list
 
 
@@ -156,18 +170,12 @@ class Population:
                 if(r <= qi):
                     mating_pool.append(self.individual_list[i])
                     break
-        print(fitness_list)
-        print(prob_list)
-        print(prob_commulativ)
-        for i in mating_pool:
-            print(i.fitness())
         return mating_pool
 
 
     @staticmethod
-    def two_point_crossover(parent1:Individual, parent2:Individual, crossover: float):
-        length = parent1.bit_length_chromosome
-
+    def two_point_crossover(parent1:Individual, parent2:Individual, crossover=0.75):
+        length = BIT_LENGTH_CHROMOSOME
         parent_1_genes = parent1.genes
         parent_2_genes = parent2.genes
 
@@ -191,12 +199,31 @@ class Population:
             genes_offspring_2.append(p1[1])
             genes_offspring_2.append(p2[2])
 
-            return True, genes_offspring_1,genes_offspring_2
+            return True, Individual(genes_offspring_1),Individual(genes_offspring_2)
         else:
-            return False, parent_1_genes, parent_2_genes
+            return False, parent1, parent2
+
+    def new_generation(self):
+        new_population = []
+        pop_size = len(self.individual_list)
+        for _ in range(int(pop_size/2)):
+            mating_pool = self.selection_roullete(2)
+            mated, new1, new2 = Population.two_point_crossover(mating_pool[0],mating_pool[1])
+            new_population.append(new1.mutate())
+            new_population.append(new2.mutate())
+
+        self.individual_list = new_population
+        self.generation += 1
 
 
-
+    def print_genes(self):
+        sum_fitness = 0
+        print("generation " + str(self.generation))
+        for counter, indiv in enumerate(self.individual_list):
+            print(str(counter)+": " + "genome: " +str(indiv.genes)[2:] + " fitness: " + str(indiv.fitness))
+            sum_fitness += indiv.fitness
+        print("sum fitness: " + str(sum_fitness))
+        print("---------------------------------")
 
 
 
@@ -207,15 +234,13 @@ class Population:
 
 
 def main():
+
+
     pop1 = Population(Population.random_population_list(10))
-    parent1 = pop1.individual_list[0]
-    parent2 = pop1.individual_list[2]
-    a, b, c = Population.two_point_crossover(parent1, parent2, 0.5)
-    print(parent1.genes)
-    print(parent2.genes)
-    print(a)
-    print(b)
-    print(c)
+    pop1.print_genes()
+    for _ in range(1000):
+        pop1.new_generation()
+        pop1.print_genes()
 
 if __name__ == "__main__":
     main()
