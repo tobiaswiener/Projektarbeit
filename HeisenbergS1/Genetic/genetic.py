@@ -255,6 +255,14 @@ class Population:
         self.generation += 1
 
 
+
+    def sum_fitness(self):
+        sum_fitness = 0
+        for indiv in self.individual_list:
+            sum_fitness += indiv.fitness
+
+        return sum_fitness
+
     def print_genes(self):
         sum_fitness = 0
         print("generation " + str(self.generation))
