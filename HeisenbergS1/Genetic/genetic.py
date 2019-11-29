@@ -4,6 +4,7 @@ from bitstring import BitArray, BitStream, BitString
 import math
 import os
 import json
+import matplotlib.pyplot as plt
 import copy
 directory = "test"
 try:
@@ -11,9 +12,9 @@ try:
 except(FileExistsError):
     pass
 
-_POPULATION_SIZE = 10
+_POPULATION_SIZE = 100
 
-_MAX_HIDDEN_LAYERS = 3
+_MAX_HIDDEN_LAYERS = 10
 _MAX_NEURONS_PER_LAYER = 8
 _ACTIVATION_FUNCTION = "tanh"
 
@@ -114,8 +115,9 @@ class Individual:
 
 
     @staticmethod
-    def random_individual():
+    def random_individual(seed=1235):
         bit_string = ""
+        np.random.seed(seed)
         for _ in range(Individual.bit_length_chromosome):
             bit_string += str(np.random.randint(0,2))
 
@@ -140,7 +142,7 @@ class Population:
         self.generation = 0
 
     @staticmethod
-    def random_population_list(pop_size:int):
+    def random_population_list(pop_size:int = _POPULATION_SIZE):
         list_individuals = []
         for _ in range(pop_size):
             list_individuals.append(Individual.random_individual())
@@ -153,7 +155,28 @@ class Population:
         return fitness_list
 
 
-    def selection_roullete(self, mating_pool_size:int):
+
+
+
+    def selection_tournament(self, mating_pool_size = _POPULATION_SIZE ,tournament_size = 2):
+        mating_pool = []
+        for i in range(mating_pool_size):
+            tournament_pool = []
+
+            for _ in range(tournament_size):
+                r = np.random.randint(0,_POPULATION_SIZE)
+                tournament_pool.append(self.individual_list[r])
+
+            fittest_indiv = tournament_pool[0]
+
+            for indiv in tournament_pool:           #find fittest individual in tournament pool
+                if(indiv.fitness > fittest_indiv.fitness):
+                    fittest_indiv = indiv
+
+            mating_pool.append(fittest_indiv)
+        return mating_pool
+
+    def selection_roullete(self, mating_pool_size:_POPULATION_SIZE):
         mating_pool = []
         fitness_list = self.give_fitness_list()
         fitness_sum = 0
@@ -206,16 +229,26 @@ class Population:
         else:
             return False, parent1, parent2
 
-    def new_generation(self):
+
+
+    def new_generation(self,selection_method:str,tournament_size=2):
         new_population = []
-        pop_size = len(self.individual_list)
-        for _ in range(int(pop_size/2)):
-            mating_pool = self.selection_roullete(2)
-            mated, new1, new2 = Population.two_point_crossover(mating_pool[0],mating_pool[1])
-            new_population.append(new1.mutate())
-            new_population.append(new2.mutate())
+
+        if(selection_method == "tournament"):
+            mating_pool = self.selection_tournament(mating_pool_size=_POPULATION_SIZE,tournament_size=tournament_size)
+        elif(selection_method == "roullete"):
+            mating_pool = self.selection_roullete(mating_pool_size=_POPULATION_SIZE)
+
+
+        for _ in range(int(_POPULATION_SIZE/2)):
+            r1 = np.random.randint(0,len(mating_pool))
+            r2 = np.random.randint(0,len(mating_pool))
+            mated, new1, new2 = self.two_point_crossover(mating_pool[r1],mating_pool[r2])
+            new_population.append(new1)
+            new_population.append(new2)
 
         for indiv in new_population:
+            indiv.mutate()
             indiv.act_fitness()
 
         self.individual_list = new_population
