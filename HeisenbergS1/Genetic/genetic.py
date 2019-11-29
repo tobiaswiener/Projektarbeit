@@ -280,14 +280,49 @@ class Population:
 
 
 
+
+
+
+
+def tournament_vs_roullete():
+    pop1 = Population(Population.random_population_list())
+    pop2 = Population(Population.random_population_list())
+    fitnesslist1 = [[pop1.generation],[pop1.sum_fitness()]]
+    fitnesslist2 = [[pop1.generation],[pop1.sum_fitness()]]
+
+    for i in range(100):
+        pop1.new_generation("tournament")
+        fitnesslist1[0].append(pop1.generation)
+        fitnesslist1[1].append(pop1.sum_fitness())
+
+        pop2.new_generation("roullete")
+        fitnesslist2[0].append(pop2.generation)
+        fitnesslist2[1].append(pop2.sum_fitness())
+
+
+    plt.plot(fitnesslist1[0],fitnesslist1[1],label="tournament")
+    plt.plot(fitnesslist2[0], fitnesslist2[1],label="roullete")
+    plt.legend()
+    plt.show()
+
+def tournament_pool_size():
+
+
+
+    for tour_size in range(10):
+        pop = Population(Population.random_population_list())
+        fitnesslist = [[pop.generation],[pop.sum_fitness()]]
+        for gen in range(100):
+            pop.new_generation("tournament",tour_size+1)
+            fitnesslist[0].append(gen+1)
+            fitnesslist[1].append(pop.sum_fitness())
+        plt.plot(fitnesslist[0],fitnesslist[1],label="Tournament size" + str(tour_size+1))
+
+    plt.legend()
+    plt.show()
+
 def main():
-
-
-    pop1 = Population(Population.random_population_list(10))
-    pop1.print_genes()
-    for _ in range(1000):
-        pop1.new_generation()
-        pop1.print_genes()
+    tournament_pool_size()
 
 if __name__ == "__main__":
     main()
