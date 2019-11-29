@@ -1,36 +1,50 @@
 import numpy as np
-import netket as nk
+import netket20 as nk
 from bitstring import BitArray, BitStream, BitString
 import math
 import os
 import json
+import build
+import time
 import matplotlib.pyplot as plt
 import copy
 directory = "test"
+seed = 123435
+np.random.seed(seed=seed)
+EXACT_GS_LANCZOS_L6 = -6.121783536905424
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
-_POPULATION_SIZE = 100
+_POPULATION_SIZE = 10
 
-_MAX_HIDDEN_LAYERS = 10
-_MAX_NEURONS_PER_LAYER = 8
+_MAX_HIDDEN_LAYERS = 4
+_MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"
 
 if(_MAX_NEURONS_PER_LAYER % 2 == 0):
     BIT_LENGTH_PER_LAYER = int(math.log2(_MAX_NEURONS_PER_LAYER))
 else:
     BIT_LENGTH_PER_LAYER = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
-BIT_LENGTH_CHROMOSOME = BIT_LENGTH_PER_LAYER *_MAX_HIDDEN_LAYERS
+
+
+if(_MAX_HIDDEN_LAYERS % 2 == 0):
+    BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
+else:
+    BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS)) + 1
+
+
+
+BIT_LENGTH_CHROMOSOME = BIT_LENGTH_PER_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 30
+_L = 6
 _J = 1
 _seed = 12345
 """Optimizer"""
-_optimizer = ["AdaMax"]
+_optimizer = "AdaMax"
 _alpha=0.001 #0.001
 _beta1=0.9 #0.9
 _beta2=0.999 #0.999
@@ -39,29 +53,30 @@ _epscut=1e-07 #1e-07
 _sampler = "MetropolisHop"    #["MetropolisLocal","MetropolisHop"]
 _d_max = 5
 """VMC"""
-_discarded_samples = 500
+_discarded_samples = 100
 _discarded_samples_on_init = 0
 _method = "Gd"               #["Gd","Sr"]
-_n_samples = 2000
+_n_samples = 200
 _diag_shift = 0.01
 _use_iterative = False   #[False,True]
 _use_cholesky = False         #[False,True]
 _target = "energy"
-_n_iter = 5000
+_n_iter = 100
 
 
 
 
 class Individual:
 
-    if(_MAX_NEURONS_PER_LAYER % 2 == 0):
-        bit_length_per_layer = int(math.log2(_MAX_NEURONS_PER_LAYER))
-    else:
-        bit_length_per_layer = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
-    bit_length_chromosome = bit_length_per_layer *_MAX_HIDDEN_LAYERS
+    # if(_MAX_NEURONS_PER_LAYER % 2 == 0):
+    #     bit_length_per_layer = int(math.log2(_MAX_NEURONS_PER_LAYER))
+    # else:
+    #     bit_length_per_layer = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
+    # bit_length_chromosome = bit_length_per_layer *_MAX_HIDDEN_LAYERS
 
     def __init__(self, genes:BitArray):
         self.genes = genes
+        self.dicc = self.create_dicc()
         self.fitness = self.eval_fitness()
 
 
@@ -80,8 +95,8 @@ class Individual:
 
 
 
-    def create_ip(self):
-        _model = self.give_config_json()
+    def create_dicc(self):
+        _model = self.decode_genome()
         dicc = {
             "input": {
                 "L": _L, "J": _J,
@@ -93,19 +108,67 @@ class Individual:
                         "diag_shift": _diag_shift, "use_iterative": _use_iterative, "use_cholesky": _use_iterative},
                 "n_iter": _n_iter}
         }
-        n=1
-        filename = str(self.generation) + "_" + str(n)
-        filenamelog = str(self.generation) + "_" + str(n)
+        return dicc
 
-        while (os.path.isfile(filename) or os.path.isfile(filenamelog)):
-            n +=1
-            filename = str(self.generation) + "_" + str(n)
-            filenamelog = str(self.generation) + "_" + str(n)
 
-        with open(directory +"/"+filename, 'w') as outfile:
-            json.dump(dicc, outfile)
 
-    def eval_fitness(self):
+    def run_genome(self):
+        graph, hilbert, hamilton = build.generateNN(length=_L, coupling=_J)
+        config = self.decode_genome()
+
+        layers = []
+
+        layers.append(
+            nk.layer.FullyConnected(input_size=_L, output_size=int(config[1]), use_bias=True))
+
+        for _ in range(config[2]-1):
+            layers.append(nk.layer.Tanh(input_size=int(config[1])))
+
+        layers.append(nk.layer.SumOutput(input_size=int(config[1])))
+        layers = tuple(layers)  # layers must be tuple
+
+        for layer in layers:
+            layer.init_random_parameters(seed=543164684, sigma=0.01)
+        ma = nk.machine.FFNN(hilbert, layers)
+
+        if (_sampler == "MetropolisLocal"):
+            sa = nk.sampler.MetropolisLocal(machine=ma)
+        elif (_sampler == "MetropolisHop"):
+            sa = nk.sampler.MetropolisHop(machine=ma, d_max=_d_max)
+        if (_optimizer == "AdaMax"):
+            opt = nk.optimizer.AdaMax(alpha=_alpha, beta1=_beta1, beta2=_beta2, epscut=_epscut)
+        elif (_optimizer == "AmsGrad"):
+            opt = nk.optimizer.AmsGrad(learning_rate=_alpha, beta1=_beta1, beta2=_beta2,
+                                       epscut=_epscut)
+
+        gs = nk.variational.Vmc(hamiltonian=hamilton,
+                                sampler=sa,
+                                optimizer=opt,
+                                n_samples=_n_samples,
+                                use_iterative=_use_iterative,
+                                use_cholesky=_use_cholesky,
+                                method=_method,
+                                diag_shift=_diag_shift,
+                                discarded_samples=_discarded_samples,
+                                discarded_samples_on_init=_discarded_samples_on_init,
+                                target=_target)
+
+        file_name = str(self.genes.bin)
+        try:
+            start_time = time.time()
+            gs.run(output_prefix=directory + "/" + file_name, n_iter=_n_iter)
+            end_time = time.time()
+
+            if (nk._C_netket.MPI.rank() == 0):
+                with open(directory + "/" + file_name + ".log", "a") as f:
+                    f.write("\n")
+                    json.dump(self.dicc, f)
+                    f.write("\nduration: " + str(start_time - end_time))
+        except:
+            print(directory + "/" + file_name + "failed")
+
+
+    def eval_fitness_anti_ferro(self):
         # f = 0
         # for i in self.genes:
         #     if(i):
@@ -129,10 +192,10 @@ class Individual:
 
 
     @staticmethod
-    def random_individual(seed=1235):
+    def random_individual():
         bit_string = ""
-        np.random.seed(seed)
-        for _ in range(Individual.bit_length_chromosome):
+
+        for _ in range(BIT_LENGTH_CHROMOSOME):
             bit_string += str(np.random.randint(0,2))
 
         individual = Individual(BitArray("0b" + bit_string))
@@ -322,9 +385,6 @@ def tournament_vs_roullete():
     plt.show()
 
 def tournament_pool_size():
-
-
-
     for tour_size in range(10):
         pop = Population(Population.random_population_list())
         fitnesslist = [[pop.generation],[pop.sum_fitness()]]
