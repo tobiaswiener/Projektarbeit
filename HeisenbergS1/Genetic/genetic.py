@@ -7,9 +7,10 @@ import json
 import build
 import time
 import matplotlib.pyplot as plt
+import os.path
 import copy
 directory = "test"
-seed = 123435
+seed = 2335
 np.random.seed(seed=seed)
 EXACT_GS_LANCZOS_L6 = -6.121783536905424
 try:
@@ -17,7 +18,7 @@ try:
 except(FileExistsError):
     pass
 
-_POPULATION_SIZE = 10
+_POPULATION_SIZE = 100000
 
 _MAX_HIDDEN_LAYERS = 4
 _MAX_NEURONS_PER_LAYER = 64
@@ -80,17 +81,35 @@ class Individual:
         self.fitness = self.eval_fitness()
 
 
-    def give_layer(self, counter:int):
-        begin = counter * Individual.bit_length_per_layer
-        end = (counter+1) * Individual.bit_length_per_layer
-        layer = self.genes[begin:end].uint
-        return layer
+
+    # def give_layer(self, counter:int):
+    #     begin = counter * Individual.bit_length_per_layer
+    #     end = (counter+1) * Individual.bit_length_per_layer
+    #     layer = self.genes[begin:end].uint
+    #     return layer
+    #
+    #
+    # def give_config_json(self):
+    #     config = [_ACTIVATION_FUNCTION,[]]
+    #     for i in range(_MAX_HIDDEN_LAYERS):
+    #          config[1].append(self.give_layer(i))
+    #     return config
 
 
-    def give_config_json(self):
-        config = [_ACTIVATION_FUNCTION,[]]
-        for i in range(_MAX_HIDDEN_LAYERS):
-             config[1].append(self.give_layer(i))
+    def decode_genome(self):
+        config = []
+        act_func = _ACTIVATION_FUNCTION
+        begin_npl = 0
+        end_npl = BIT_LENGTH_PER_LAYER
+        neurons_per_layer = self.genes[begin_npl:end_npl].uint+1
+
+        begin_hl = BIT_LENGTH_PER_LAYER
+        end_hl = begin_hl + BIT_LENGTH_HIDDEN_LAYER+1
+        hidden_layer = self.genes[begin_hl:end_hl].uint+1
+        config.append(act_func)
+        config.append(neurons_per_layer)
+        config.append(hidden_layer)
+
         return config
 
 
@@ -168,7 +187,7 @@ class Individual:
             print(directory + "/" + file_name + "failed")
 
 
-    def eval_fitness_anti_ferro(self):
+    def eval_fitness_1(self):
         # f = 0
         # for i in self.genes:
         #     if(i):
@@ -183,6 +202,46 @@ class Individual:
             else:
                 pass
         return f
+
+    def eval_fitness(self):
+        file_name = self.genes.bin
+        if not(os.path.isfile(directory + "/" + file_name + ".log")):
+            self.run_genome()
+        data = []
+        try:
+            if (nk._C_netket.MPI.rank() == 0):
+                with open(directory + "/" + file_name + ".log") as f:
+                    print(directory + "/" + file_name + ".log")
+                    lines = f.readlines()
+                for line in lines[-53:-3]:
+                    try:
+                        b = json.loads(line[0:len(line) - 2])
+                        data.append(b)
+                    except ValueError:
+                        print(str(line) +"failed")
+        except:
+            print("fail")
+            pass
+        energy_sum = 0
+        for iteration in data:
+            energy_sum += iteration["Energy"]["Mean"]
+        energy_mean = energy_sum/len(data)
+
+        diff = np.abs(energy_mean-EXACT_GS_LANCZOS_L6)
+        fitness = np.abs(np.log(1/diff))
+        return fitness
+
+    #     self.run_genome()
+    #     name = str(self.genes.bin)
+    #     with open(directory + "/" + name) as f:
+    #         lines = f.readlines()
+    #     for line in lines:
+    #         try:
+    #             b = json.loads(line[0:len(line) - 2])
+    #             data.append(b)
+    #         except ValueError as e:
+    #             print(counter)
+    #             pass
 
 
 
@@ -344,7 +403,7 @@ class Population:
         sum_fitness = 0
         print("generation " + str(self.generation))
         for counter, indiv in enumerate(self.individual_list):
-            print(str(counter)+": " + "genome: " +str(indiv.genes)[2:] + " fitness: " + str(indiv.fitness))
+            print(str(counter)+": " + "genome: " +str(indiv.genes.bin) + " fitness: " + str(indiv.fitness))
             sum_fitness += indiv.fitness
         print("sum fitness: " + str(sum_fitness))
         print("---------------------------------")
@@ -397,10 +456,22 @@ def tournament_pool_size():
 
     plt.legend()
     plt.show()
-
+def test_tournament():
+    pop = Population(Population.random_population_list())
+    fitnesslist = [[pop.generation], [pop.sum_fitness()]]
+    for gen in range(100):
+        pop.new_generation("tournament", 4)
+        fitnesslist[0].append(gen + 1)
+        fitnesslist[1].append(pop.sum_fitness())
+        # plt.plot(fitnesslist[0], fitnesslist[1], label="Tournament size" + str(3))
+        # plt.show()
+        pop.print_genes()
+    plt.plot(fitnesslist[0], fitnesslist[1], label="Tournament size" + str(3))
+    pop.print_genes()
 def main():
-    tournament_vs_roullete()
+    pass
+    #tournament_vs_roullete()
     #tournament_pool_size()
-
+    test_tournament()
 if __name__ == "__main__":
     main()
