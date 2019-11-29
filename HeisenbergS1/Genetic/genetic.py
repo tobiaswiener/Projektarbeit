@@ -73,11 +73,13 @@ class Individual:
 
 
     def give_config_json(self):
-        # config = [_ACTIVATION_FUNCTION,[]]
-        # for i in range(_MAX_HIDDEN_LAYERS):
-        #     config[1].append(self.give_layer(i))
-        # return config
-        return 5
+        config = [_ACTIVATION_FUNCTION,[]]
+        for i in range(_MAX_HIDDEN_LAYERS):
+             config[1].append(self.give_layer(i))
+        return config
+
+
+
     def create_ip(self):
         _model = self.give_config_json()
         dicc = {
@@ -104,11 +106,23 @@ class Individual:
             json.dump(dicc, outfile)
 
     def eval_fitness(self):
+        # f = 0
+        # for i in self.genes:
+        #     if(i):
+        #         f += 1
+        # return f
         f = 0
-        for i in self.genes:
-            if(i):
+        for i in range(BIT_LENGTH_CHROMOSOME):
+            if(self.genes[i] and not(self.genes[(i+1) % BIT_LENGTH_CHROMOSOME])):
                 f += 1
+            elif(not(self.genes[i]) and self.genes[(i+1) % BIT_LENGTH_CHROMOSOME]):
+                f += 1
+            else:
+                pass
         return f
+
+
+
 
     def act_fitness(self):
         self.fitness = self.eval_fitness()
@@ -291,7 +305,7 @@ def tournament_vs_roullete():
     fitnesslist2 = [[pop1.generation],[pop1.sum_fitness()]]
 
     for i in range(100):
-        pop1.new_generation("tournament")
+        pop1.new_generation("tournament",tournament_size=7)
         fitnesslist1[0].append(pop1.generation)
         fitnesslist1[1].append(pop1.sum_fitness())
 
@@ -302,6 +316,8 @@ def tournament_vs_roullete():
 
     plt.plot(fitnesslist1[0],fitnesslist1[1],label="tournament")
     plt.plot(fitnesslist2[0], fitnesslist2[1],label="roullete")
+    pop1.print_genes()
+    pop2.print_genes()
     plt.legend()
     plt.show()
 
@@ -317,12 +333,14 @@ def tournament_pool_size():
             fitnesslist[0].append(gen+1)
             fitnesslist[1].append(pop.sum_fitness())
         plt.plot(fitnesslist[0],fitnesslist[1],label="Tournament size" + str(tour_size+1))
+        pop.print_genes()
 
     plt.legend()
     plt.show()
 
 def main():
-    tournament_pool_size()
+    tournament_vs_roullete()
+    #tournament_pool_size()
 
 if __name__ == "__main__":
     main()
