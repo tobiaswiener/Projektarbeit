@@ -1,4 +1,4 @@
-import netket20 as nk
+import netket as nk
 import numpy as np
 import time
 

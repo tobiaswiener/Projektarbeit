@@ -1,5 +1,5 @@
 import numpy as np
-import netket20 as nk
+import netket as nk
 from bitstring import BitArray, BitStream, BitString
 import math
 import os
@@ -18,7 +18,7 @@ try:
 except(FileExistsError):
     pass
 
-_POPULATION_SIZE = 100000
+_POPULATION_SIZE = 100
 
 _MAX_HIDDEN_LAYERS = 4
 _MAX_NEURONS_PER_LAYER = 64
@@ -211,7 +211,7 @@ class Individual:
         try:
             if (nk._C_netket.MPI.rank() == 0):
                 with open(directory + "/" + file_name + ".log") as f:
-                    print(directory + "/" + file_name + ".log")
+                    #print(directory + "/" + file_name + ".log")
                     lines = f.readlines()
                 for line in lines[-53:-3]:
                     try:
@@ -459,7 +459,7 @@ def tournament_pool_size():
 def test_tournament():
     pop = Population(Population.random_population_list())
     fitnesslist = [[pop.generation], [pop.sum_fitness()]]
-    for gen in range(100):
+    for gen in range(20):
         pop.new_generation("tournament", 4)
         fitnesslist[0].append(gen + 1)
         fitnesslist[1].append(pop.sum_fitness())
@@ -472,6 +472,6 @@ def main():
     pass
     #tournament_vs_roullete()
     #tournament_pool_size()
-    test_tournament()
+    #test_tournament()
 if __name__ == "__main__":
     main()
