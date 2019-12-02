@@ -9,7 +9,7 @@ import time
 import matplotlib.pyplot as plt
 import os.path
 import copy
-directory = "test"
+directory = "test2"
 seed = 2335
 np.random.seed(seed=seed)
 EXACT_GS_LANCZOS_L6 = -6.121783536905424
@@ -20,8 +20,8 @@ except(FileExistsError):
 
 _POPULATION_SIZE = 100
 
-_MAX_HIDDEN_LAYERS = 4
-_MAX_NEURONS_PER_LAYER = 64
+_MAX_HIDDEN_LAYERS = 8
+_MAX_NEURONS_PER_LAYER = 512
 _ACTIVATION_FUNCTION = "tanh"
 
 if(_MAX_NEURONS_PER_LAYER % 2 == 0):
@@ -62,7 +62,7 @@ _diag_shift = 0.01
 _use_iterative = False   #[False,True]
 _use_cholesky = False         #[False,True]
 _target = "energy"
-_n_iter = 100
+_n_iter = 1
 
 
 
@@ -112,8 +112,6 @@ class Individual:
 
         return config
 
-
-
     def create_dicc(self):
         _model = self.decode_genome()
         dicc = {
@@ -128,8 +126,6 @@ class Individual:
                 "n_iter": _n_iter}
         }
         return dicc
-
-
 
     def run_genome(self):
         graph, hilbert, hamilton = build.generateNN(length=_L, coupling=_J)
@@ -186,7 +182,6 @@ class Individual:
         except:
             print(directory + "/" + file_name + "failed")
 
-
     def eval_fitness_1(self):
         # f = 0
         # for i in self.genes:
@@ -207,7 +202,8 @@ class Individual:
         file_name = self.genes.bin
         if not(os.path.isfile(directory + "/" + file_name + ".log")):
             self.run_genome()
-        data = []
+
+        data=[]
         try:
             if (nk._C_netket.MPI.rank() == 0):
                 with open(directory + "/" + file_name + ".log") as f:
@@ -230,6 +226,7 @@ class Individual:
         diff = np.abs(energy_mean-EXACT_GS_LANCZOS_L6)
         fitness = np.abs(np.log(1/diff))
         return fitness
+
 
     #     self.run_genome()
     #     name = str(self.genes.bin)
@@ -410,16 +407,6 @@ class Population:
 
 
 
-
-
-
-
-
-
-
-
-
-
 def tournament_vs_roullete():
     pop1 = Population(Population.random_population_list())
     pop2 = Population(Population.random_population_list())
@@ -472,6 +459,6 @@ def main():
     pass
     #tournament_vs_roullete()
     #tournament_pool_size()
-    #test_tournament()
+    test_tournament()
 if __name__ == "__main__":
     main()
