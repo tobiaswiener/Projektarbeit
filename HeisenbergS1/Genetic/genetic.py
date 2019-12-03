@@ -141,8 +141,12 @@ class Individual:
             nk.layer.FullyConnected(input_size=_L, output_size=int(config[1]), use_bias=True))
 
         for _ in range(config[2]-1):
-            layers.append(nk.layer.Tanh(input_size=int(config[1])))
-
+            if(_ACTIVATION_FUNCTION == "tanh"):
+                layers.append(nk.layer.Tanh(input_size=int(config[1])))
+            if (_ACTIVATION_FUNCTION == "lncosh"):
+                layers.append(nk.layer.Tanh(input_size=int(config[1])))
+            if (_ACTIVATION_FUNCTION == "relu"):
+                layers.append(nk.layer.Tanh(input_size=int(config[1])))
         layers.append(nk.layer.SumOutput(input_size=int(config[1])))
         layers = tuple(layers)  # layers must be tuple
 
@@ -186,7 +190,7 @@ class Individual:
         except:
             print(directory + "/" + file_name + "failed")
 
-    def eval_fitness_1(self):
+    def eval_fitness_anti_ferro(self):
         # f = 0
         # for i in self.genes:
         #     if(i):
@@ -209,24 +213,27 @@ class Individual:
 
         data=[]
         try:
-            if (nk._C_netket.MPI.rank() == 0):
-                with open(directory + "/" + file_name + ".log") as f:
-                    #print(directory + "/" + file_name + ".log")
-                    lines = f.readlines()
-                for line in lines[-53:-3]:
-                    try:
-                        b = json.loads(line[0:len(line) - 2])
-                        data.append(b)
-                    except ValueError:
-                        print(str(line) +"failed")
+            with open(directory + "/" + file_name + ".log") as f:
+                #print(directory + "/" + file_name + ".log")
+                lines = f.readlines()
+            for line in lines[-53:-3]:
+                try:
+                    b = json.loads(line[0:len(line) - 2])
+                    data.append(b)
+                except ValueError:
+                    pass
         except:
             print("fail")
             pass
         energy_sum = 0
         for iteration in data:
             energy_sum += iteration["Energy"]["Mean"]
-        energy_mean = energy_sum/len(data)
 
+        try:
+            energy_mean = energy_sum/len(data)
+        except ZeroDivisionError:
+            energy_mean = 0
+            print("%s is empty or defect" %(str(self.genes.bin)))
         diff = np.abs(energy_mean-EXACT_GS_LANCZOS_L6)
         fitness = 1/diff
         return fitness
