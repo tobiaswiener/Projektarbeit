@@ -14,19 +14,16 @@ import copy
 
 
 
-directory = "L6_64_4_relu"
+
 seed = 2335
 np.random.seed(seed=seed)
 EXACT_GS_LANCZOS_L6 = -6.121783536905424
-try:
-    os.mkdir(directory)
-except(FileExistsError):
-    pass
 
-_POPULATION_SIZE = 10000
 
-_MAX_HIDDEN_LAYERS = 16
-_MAX_NEURONS_PER_LAYER = 256
+_POPULATION_SIZE = 100
+
+_MAX_HIDDEN_LAYERS = 4
+_MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
 TOURNAMENT_SIZE = 4
 
@@ -36,7 +33,7 @@ BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 6
+_L = 10
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -52,15 +49,20 @@ _d_max = 5
 _discarded_samples = 100
 _discarded_samples_on_init = 0
 _method = "Gd"               #["Gd","Sr"]
-_n_samples = 200
+_n_samples = 100
 _diag_shift = 0.01
-_use_iterative = False   #[False,True]
-_use_cholesky = False         #[False,True]
+_use_iterative = True   #[False,True]
+_use_cholesky = True         #[False,True]
 _target = "energy"
 _n_iter = 100
 
 
 
+directory = "L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
+try:
+    os.mkdir(directory)
+except(FileExistsError):
+    pass
 
 class Individual:
 
@@ -463,6 +465,6 @@ def main():
     pass
     #tournament_vs_roullete()
     #tournament_pool_size()
-    #test_tournament()
+    test_tournament()
 if __name__ == "__main__":
     main()
