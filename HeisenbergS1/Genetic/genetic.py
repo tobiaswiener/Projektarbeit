@@ -13,19 +13,19 @@ import copy
 
 
 
+DIFFERENT_NETWORKS_LISTS = []
 
-
-seed = 2335
+seed = 1321
 np.random.seed(seed=seed)
-EXACT_GS_LANCZOS_L6 = -6.121783536905424
 
 
-_POPULATION_SIZE = 100
+
+_POPULATION_SIZE = 10
 
 _MAX_HIDDEN_LAYERS = 4
 _MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
-TOURNAMENT_SIZE = 4
+TOURNAMENT_SIZE = 8
 
 BIT_LENGTH_NO_LAYER =int(math.log2(_MAX_NEURONS_PER_LAYER))
 BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
@@ -33,7 +33,7 @@ BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 10
+_L = 18
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -57,6 +57,10 @@ _target = "energy"
 _n_iter = 100
 
 
+EXACT_GS_LANCZOS_L6 = -1.020297256150904
+EXACT_GS_LANCZOS_L10 = -1.2458475990024203
+
+EXACT = -1.401484038970*_L
 
 directory = "L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
 try:
@@ -76,6 +80,9 @@ class Individual:
         self.genes = genes
         self.dicc = self.create_dicc()
         self.fitness = self.eval_fitness()
+        global DIFFERENT_NETWORKS_LISTS
+        if not(self.genes.bin in DIFFERENT_NETWORKS_LISTS):
+            DIFFERENT_NETWORKS_LISTS.append(self.genes.bin)
 
     @staticmethod
     def random_individual():
@@ -211,6 +218,7 @@ class Individual:
     def eval_fitness(self):
         file_name = self.genes.bin
         if not(os.path.isfile(directory + "/" + file_name + ".log")):
+
             self.run_genome()
 
         data=[]
@@ -236,7 +244,8 @@ class Individual:
         except ZeroDivisionError:
             energy_mean = 0
             print("%s is empty or defect" %(str(self.genes.bin)))
-        diff = np.abs(energy_mean-EXACT_GS_LANCZOS_L6)
+
+        diff = np.abs(energy_mean-EXACT)
         fitness = 1/diff
         return fitness
 
@@ -278,6 +287,7 @@ class Population:
     def __init__(self,population:[Individual]):
         self.individual_list = population
         self.generation = 0
+
 
     @staticmethod
     def random_population_list(pop_size:int = _POPULATION_SIZE):
@@ -342,6 +352,7 @@ class Population:
         length = BIT_LENGTH_CHROMOSOME
         parent_1_genes = parent1.genes
         parent_2_genes = parent2.genes
+
 
         if (crossover > np.random.rand()):
             first = np.random.randint(0,length)
@@ -449,10 +460,12 @@ def tournament_pool_size():
 
     plt.legend()
     plt.show()
+
 def test_tournament():
     pop = Population(Population.random_population_list())
+    pop.print_genes()
     fitnesslist = [[pop.generation], [pop.sum_fitness()]]
-    for gen in range(10):
+    for gen in range(50):
         pop.new_generation("tournament", 4)
         fitnesslist[0].append(gen + 1)
         fitnesslist[1].append(pop.sum_fitness())
@@ -461,6 +474,7 @@ def test_tournament():
         pop.print_genes()
     plt.plot(fitnesslist[0], fitnesslist[1], label="Tournament size" + str(3))
     pop.print_genes()
+    print("Total Number Networks: " , len(DIFFERENT_NETWORKS_LISTS))
 def main():
     pass
     #tournament_vs_roullete()
