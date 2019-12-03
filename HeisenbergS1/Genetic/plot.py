@@ -156,7 +156,6 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
                 b = json.loads(line[0:len(line) - 2])
                 data.append(b)
             except ValueError as e:
-                print(counter)
                 pass
         iters = []
         energy = []

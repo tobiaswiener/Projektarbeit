@@ -9,7 +9,12 @@ import time
 import matplotlib.pyplot as plt
 import os.path
 import copy
-directory = "test2"
+
+
+
+
+
+directory = "L6_64_4_relu"
 seed = 2335
 np.random.seed(seed=seed)
 EXACT_GS_LANCZOS_L6 = -6.121783536905424
@@ -18,26 +23,16 @@ try:
 except(FileExistsError):
     pass
 
-_POPULATION_SIZE = 100
+_POPULATION_SIZE = 10000
 
-_MAX_HIDDEN_LAYERS = 8
-_MAX_NEURONS_PER_LAYER = 512
-_ACTIVATION_FUNCTION = "tanh"
+_MAX_HIDDEN_LAYERS = 16
+_MAX_NEURONS_PER_LAYER = 256
+_ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
+TOURNAMENT_SIZE = 4
 
-if(_MAX_NEURONS_PER_LAYER % 2 == 0):
-    BIT_LENGTH_PER_LAYER = int(math.log2(_MAX_NEURONS_PER_LAYER))
-else:
-    BIT_LENGTH_PER_LAYER = math.floor(math.log2(_MAX_NEURONS_PER_LAYER)) + 1
-
-
-if(_MAX_HIDDEN_LAYERS % 2 == 0):
-    BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
-else:
-    BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS)) + 1
-
-
-
-BIT_LENGTH_CHROMOSOME = BIT_LENGTH_PER_LAYER + BIT_LENGTH_HIDDEN_LAYER
+BIT_LENGTH_NO_LAYER =int(math.log2(_MAX_NEURONS_PER_LAYER))
+BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
+BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
@@ -62,7 +57,7 @@ _diag_shift = 0.01
 _use_iterative = False   #[False,True]
 _use_cholesky = False         #[False,True]
 _target = "energy"
-_n_iter = 1
+_n_iter = 100
 
 
 
@@ -80,7 +75,17 @@ class Individual:
         self.dicc = self.create_dicc()
         self.fitness = self.eval_fitness()
 
+    @staticmethod
+    def random_individual():
+        bit_string = ""
 
+        for _ in range(BIT_LENGTH_CHROMOSOME):
+            r = np.random.randint(0,2)
+            bit_string += str(r)
+
+        individual = Individual(BitArray("0b" + bit_string))
+
+        return individual
 
     # def give_layer(self, counter:int):
     #     begin = counter * Individual.bit_length_per_layer
@@ -100,10 +105,10 @@ class Individual:
         config = []
         act_func = _ACTIVATION_FUNCTION
         begin_npl = 0
-        end_npl = BIT_LENGTH_PER_LAYER
+        end_npl = BIT_LENGTH_NO_LAYER
         neurons_per_layer = self.genes[begin_npl:end_npl].uint+1
 
-        begin_hl = BIT_LENGTH_PER_LAYER
+        begin_hl = BIT_LENGTH_NO_LAYER
         end_hl = begin_hl + BIT_LENGTH_HIDDEN_LAYER+1
         hidden_layer = self.genes[begin_hl:end_hl].uint+1
         config.append(act_func)
@@ -132,7 +137,6 @@ class Individual:
         config = self.decode_genome()
 
         layers = []
-
         layers.append(
             nk.layer.FullyConnected(input_size=_L, output_size=int(config[1]), use_bias=True))
 
@@ -143,7 +147,7 @@ class Individual:
         layers = tuple(layers)  # layers must be tuple
 
         for layer in layers:
-            layer.init_random_parameters(seed=543164684, sigma=0.01)
+            layer.init_random_parameters(sigma=0.01)
         ma = nk.machine.FFNN(hilbert, layers)
 
         if (_sampler == "MetropolisLocal"):
@@ -224,8 +228,9 @@ class Individual:
         energy_mean = energy_sum/len(data)
 
         diff = np.abs(energy_mean-EXACT_GS_LANCZOS_L6)
-        fitness = np.abs(np.log(1/diff))
+        fitness = 1/diff
         return fitness
+
 
 
     #     self.run_genome()
@@ -247,16 +252,7 @@ class Individual:
         self.fitness = self.eval_fitness()
 
 
-    @staticmethod
-    def random_individual():
-        bit_string = ""
 
-        for _ in range(BIT_LENGTH_CHROMOSOME):
-            bit_string += str(np.random.randint(0,2))
-
-        individual = Individual(BitArray("0b" + bit_string))
-
-        return individual
 
     def mutate(self, mut_prob = 0.01):
         for i in range(BIT_LENGTH_CHROMOSOME):
@@ -291,7 +287,7 @@ class Population:
 
 
 
-    def selection_tournament(self, mating_pool_size = _POPULATION_SIZE ,tournament_size = 2):
+    def selection_tournament(self, mating_pool_size = _POPULATION_SIZE ,tournament_size = TOURNAMENT_SIZE):
         mating_pool = []
         for i in range(mating_pool_size):
             tournament_pool = []
@@ -397,6 +393,7 @@ class Population:
         return sum_fitness
 
     def print_genes(self):
+
         sum_fitness = 0
         print("generation " + str(self.generation))
         for counter, indiv in enumerate(self.individual_list):
@@ -446,7 +443,7 @@ def tournament_pool_size():
 def test_tournament():
     pop = Population(Population.random_population_list())
     fitnesslist = [[pop.generation], [pop.sum_fitness()]]
-    for gen in range(20):
+    for gen in range(10):
         pop.new_generation("tournament", 4)
         fitnesslist[0].append(gen + 1)
         fitnesslist[1].append(pop.sum_fitness())
@@ -459,6 +456,6 @@ def main():
     pass
     #tournament_vs_roullete()
     #tournament_pool_size()
-    test_tournament()
+    #test_tournament()
 if __name__ == "__main__":
     main()

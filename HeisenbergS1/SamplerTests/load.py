@@ -213,10 +213,13 @@ class specs_runnable:
 
     @staticmethod
     def log_to_input(folder: str, file_name: str) -> dict:
-
+        lines = []
         with open(folder + "/" + file_name) as f:
-            lines = []
             for line in f:
                 lines.append(line)
-                pass
-        return json.loads(lines[-2])
+        a = {}
+        try:
+            a = json.loads(lines[-2])
+        except:
+            print(file_name,"bah")
+        return a

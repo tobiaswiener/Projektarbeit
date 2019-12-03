@@ -6,26 +6,18 @@ import itertools
 import os
 
 
-directory = "L30Tests"
+directory = "L10IterCholesky"
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [30]
+_L = [10]
 _J = [1]
 
 _seed = [12345]
 _model = [
-        [5,["tanh","tanh"]],
-        [5,["tanh","tanh","tanh","tanh"]],
-        [5, ["tanh", "tanh", "tanh","tanh","tanh","tanh"]],
-        [10,["tanh","tanh"]],
-        [10,["tanh","tanh","tanh","tanh"]],
-        [10, ["tanh", "tanh", "tanh","tanh","tanh","tanh"]],
-        [15, ["tanh", "tanh"]],
-        [15, ["tanh", "tanh", "tanh", "tanh"]],
         [15, ["tanh", "tanh", "tanh", "tanh", "tanh", "tanh"]]
         ]
 
@@ -47,12 +39,12 @@ _d_max = [5]
 _discarded_samples = [500]
 _discarded_samples_on_init = [0]
 _method = ["Gd"]                #["Gd","Sr"]
-_n_samples = [2000]
+_n_samples = [200]
 _diag_shift = [0.01]
-_use_iterative = [False]   #[False,True]
-_use_cholesky = [False]         #[False,True]
+_use_iterative = [False,True]   #[False,True]
+_use_cholesky = [False,True]         #[False,True]
 _target = ["energy"]
-_n_iter = [5000]
+_n_iter = [500]
 
 
 

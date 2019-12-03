@@ -19,7 +19,7 @@ Y_MAX_From_Exact = 30
 FONT_SIZE = 5
 EXACT_ENERGY_LANCZOS_L10 = -1.2458475990024203
 EXACT_ENERGY_PER_SITE_L_INFINTY =  -1.401484038970
-
+EXACT_GS_LANCZOS_L6 = -6.121783536905424
 
 def is_json(myjson: str):
   try:
@@ -155,7 +155,6 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
                 b = json.loads(line[0:len(line) - 2])
                 data.append(b)
             except ValueError as e:
-                print(counter)
                 pass
         iters = []
         energy = []
