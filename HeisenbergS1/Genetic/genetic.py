@@ -15,15 +15,15 @@ import copy
 
 DIFFERENT_NETWORKS_LISTS = []
 
-seed = 1321
+seed = 21313212
 np.random.seed(seed=seed)
 
 
 
-_POPULATION_SIZE = 10
+_POPULATION_SIZE = 40
 
-_MAX_HIDDEN_LAYERS = 4
-_MAX_NEURONS_PER_LAYER = 64
+_MAX_HIDDEN_LAYERS = 8
+_MAX_NEURONS_PER_LAYER = 128
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
 TOURNAMENT_SIZE = 8
 
@@ -33,7 +33,7 @@ BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 18
+_L = 22
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -216,6 +216,8 @@ class Individual:
         return f
 
     def eval_fitness(self):
+        #todo punish heavy oscillations
+        fitness = 0
         file_name = self.genes.bin
         if not(os.path.isfile(directory + "/" + file_name + ".log")):
 
@@ -236,17 +238,20 @@ class Individual:
             print("fail")
             pass
         energy_sum = 0
+        quadratic_sum = 0
         for iteration in data:
             energy_sum += iteration["Energy"]["Mean"]
+            quadratic_sum += (iteration["Energy"]["Mean"]-EXACT)**2
 
         try:
             energy_mean = energy_sum/len(data)
+            quadratic_sum_mean =quadratic_sum/len(data)
         except ZeroDivisionError:
             energy_mean = 0
             print("%s is empty or defect" %(str(self.genes.bin)))
 
         diff = np.abs(energy_mean-EXACT)
-        fitness = 1/diff
+        fitness = 1/(diff+quadratic_sum_mean)
         return fitness
 
 
