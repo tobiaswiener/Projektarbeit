@@ -23,8 +23,8 @@ class Population():
         sum_fitness = 0
         print("generation " + str(self.__generation))
         for counter, indiv in enumerate(self.__list_of_individuals):
-            print(str(counter)+": " + "genome: " +str(indiv.__genes.bin) + " fitness: " + str(indiv.__fitness))
-            sum_fitness += indiv.fitness
+            print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.give_fitness()))
+            sum_fitness += indiv.give_fitness()
         print("sum fitness: " + str(sum_fitness))
         print("---------------------------------")
 
