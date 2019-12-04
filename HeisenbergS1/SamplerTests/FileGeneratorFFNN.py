@@ -18,7 +18,7 @@ _J = [1]
 
 _seed = [12345]
 _model = [
-        [5, ["tanh", "tanh", "tanh", "tanh", "tanh", "tanh"]]
+        [10, ["tanh", "tanh", "tanh", "tanh", "tanh", "tanh"]]
         ]
 
 

@@ -15,15 +15,15 @@ import copy
 
 DIFFERENT_NETWORKS_LISTS = []
 
-seed = 21313212
+seed = 21313
 np.random.seed(seed=seed)
 
 
 
-_POPULATION_SIZE = 40
+_POPULATION_SIZE = 10
 
-_MAX_HIDDEN_LAYERS = 8
-_MAX_NEURONS_PER_LAYER = 128
+_MAX_HIDDEN_LAYERS = 4
+_MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
 TOURNAMENT_SIZE = 8
 
@@ -33,7 +33,7 @@ BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 22
+_L = 14
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -48,9 +48,9 @@ _d_max = 5
 """VMC"""
 _discarded_samples = 100
 _discarded_samples_on_init = 0
-_method = "Gd"               #["Gd","Sr"]
+_method = "Sr"               #["Gd","Sr"]
 _n_samples = 100
-_diag_shift = 0.01
+_diag_shift = 10
 _use_iterative = True   #[False,True]
 _use_cholesky = True         #[False,True]
 _target = "energy"
@@ -217,6 +217,7 @@ class Individual:
 
     def eval_fitness(self):
         #todo punish heavy oscillations
+        #todo render flat line invalid (maybe, maybe rerun?)
         fitness = 0
         file_name = self.genes.bin
         if not(os.path.isfile(directory + "/" + file_name + ".log")):
