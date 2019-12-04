@@ -24,7 +24,7 @@ _POPULATION_SIZE = 10
 _MAX_HIDDEN_LAYERS = 4
 _MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
-_TOURNAMENT_SIZE = 8
+TOURNAMENT_SIZE = 8
 _BIT_LENGTH_NO_LAYER =int(math.log2(_MAX_NEURONS_PER_LAYER))
 _BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
 _BIT_LENGTH_CHROMOSOME = _BIT_LENGTH_NO_LAYER + _BIT_LENGTH_HIDDEN_LAYER
@@ -299,6 +299,8 @@ class Population:
             list_individuals.append(Individual.random_individual())
 
         return list_individuals
+
+
     def give_fitness_list(self):
         fitness_list = []
         for indiv in self.individual_list:
