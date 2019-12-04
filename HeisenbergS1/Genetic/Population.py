@@ -46,22 +46,15 @@ class Population():
                 tournament_pool.append(self.__list_of_individuals[r])
             fittest_indiv = tournament_pool[0]
 
-
             for indiv in tournament_pool:           #find fittest individual in tournament pool
-                if(indiv.eval_fitness() > fittest_indiv.eval_fitness()):
+                if indiv.eval_fitness() > fittest_indiv.eval_fitness():
                     fittest_indiv = indiv
             mating_pool.append(fittest_indiv)
         return mating_pool
 
     def new_generation(self):
         new_population_list = []
-        selection_method = geneticMain.SELECTION_METHOD
-
-
-        if(selection_method == "tournament"):
-            mating_pool = self.selection_tournament()
-        else:
-            mating_pool = self.selection_roullete()
+        mating_pool = self.selection_tournament()
 
         for _ in range(int(geneticMain.POPULATION_SIZE/2)):
             r1 = np.random.randint(0,len(mating_pool))
@@ -73,7 +66,7 @@ class Population():
         for indiv in new_population_list:
             indiv.mutate()
 
-        self.individual_list = new_population_list
+        self.__list_of_individuals = new_population_list
         self.__generation += 1
 
     @staticmethod
