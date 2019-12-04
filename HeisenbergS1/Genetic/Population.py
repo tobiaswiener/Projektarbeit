@@ -104,3 +104,4 @@ class Population():
     def give_generation(self):
         return self.__generation
 
+    #todo implement give_fittest_individual method

@@ -85,9 +85,6 @@ if not (os.path.exists(DIRECTORY)):
 
 
 
-
-
-
 def tournament_test():
     pop = Population.Population.create_random_population()
     pop.print_genes()
@@ -100,6 +97,8 @@ def tournament_test():
     plt.plot(fitnesslist[0], fitnesslist[1], label="Tournament size" + str(3))
     pop.print_genes()
     print("Total Number Networks: " , len(Individual.CALCULATED_NETWORKS))
+
+    #todo implement plot all and fittest method
 
 def main():
     tournament_test()
