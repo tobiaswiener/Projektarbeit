@@ -55,15 +55,15 @@ class Population():
         sum_fitness = 0
         print("generation " + str(self.__generation))
         for counter, indiv in enumerate(self.__list_of_individuals):
-            print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.eval_fitness()))
-            sum_fitness += indiv.eval_fitness()
+            print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.give_fitness()))
+            sum_fitness += indiv.give_fitness()
         print("sum fitness: " + str(sum_fitness))
         print("---------------------------------")
 
     def sum_fitness(self):
         sum_fitness = 0
         for indiv in self.__list_of_individuals:
-            sum_fitness += indiv.eval_fitness()
+            sum_fitness += indiv.give_fitness()
         return sum_fitness
 
     def selection_tournament(self):
@@ -79,7 +79,7 @@ class Population():
             fittest_indiv = tournament_pool[0]
 
             for indiv in tournament_pool:           #find fittest individual in tournament pool
-                if indiv.eval_fitness() > fittest_indiv.eval_fitness():
+                if indiv.give_fitness() > fittest_indiv.give_fitness():
                     fittest_indiv = indiv
             mating_pool.append(fittest_indiv)
         return mating_pool
