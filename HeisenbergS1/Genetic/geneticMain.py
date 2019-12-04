@@ -88,8 +88,8 @@ if not (os.path.exists(DIRECTORY)):
 
 
 def main():
-    testmod.printRandom()
-    pass
+    i1 = Individual.Individual.random_individual()
+
 
 
 if __name__=="__main__":
