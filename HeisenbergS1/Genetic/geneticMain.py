@@ -3,6 +3,7 @@ import numpy as np
 import math
 import os
 import Individual
+import Population
 
 
 CLUSTER = False  #True,False
