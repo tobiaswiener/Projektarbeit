@@ -16,7 +16,7 @@ class Individual:
 
     def __init__(self, genes: str):
         self.__genes = BitArray("0b" + genes)
-        #self.fitness = self.eval_fitness()
+        self.fitness = self.eval_fitness()
         global CALCULATED_NETWORKS
         if not(self.__genes.bin in CALCULATED_NETWORKS):
             CALCULATED_NETWORKS.append(self.__genes.bin)
@@ -177,3 +177,11 @@ class Individual:
                 print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
             fitness = 1/(delta_energy_mean+variance)
         return fitness
+
+    def mutate(self):
+        for i in range(geneticMain.BIT_LENGTH_CHROMOSOME):
+            if geneticMain.MUTATE_PROB > np.random.rand():
+                self.__genes[i] = not(self.__genes[i])
+
+
+
