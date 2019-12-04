@@ -1,6 +1,6 @@
 import numpy as np
 import netket as nk
-from bitstring import BitArray, BitStream, BitString
+from bitstring import BitArray
 import math
 import os
 import json
@@ -8,7 +8,7 @@ import build
 import time
 import matplotlib.pyplot as plt
 import os.path
-import copy
+
 
 
 
