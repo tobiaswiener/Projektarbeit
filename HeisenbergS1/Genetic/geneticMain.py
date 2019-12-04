@@ -24,7 +24,7 @@ POPULATION_SIZE = 10
 MUTATE_PROB = 0.01
 SELECTION_METHOD = "tournament"     #tournament, roulette
 
-
+CROSSOVER_PROP = 0.75
 
 
 
@@ -90,7 +90,8 @@ if not (os.path.exists(DIRECTORY)):
 
 def main():
     i1 = Individual.Individual.random_individual()
-
+    p1 = Population.Population.create_random_population()
+    p1.print_genes()
 
 
 if __name__=="__main__":
