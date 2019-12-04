@@ -181,5 +181,5 @@ class Individual:
         for i in range(geneticMain.BIT_LENGTH_CHROMOSOME):
             if geneticMain.MUTATE_PROB > np.random.rand():
                 self.__genes[i] = not(self.__genes[i])
-        self.__fitness = self.eval_fitness
+
 
