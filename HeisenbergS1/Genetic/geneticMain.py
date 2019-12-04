@@ -89,9 +89,11 @@ if not (os.path.exists(DIRECTORY)):
 
 
 def main():
-    i1 = Individual.Individual.random_individual()
     p1 = Population.Population.create_random_population()
     p1.print_genes()
+    for _ in range(40):
+        p1.new_generation()
+        p1.print_genes()
 
 
 if __name__=="__main__":
