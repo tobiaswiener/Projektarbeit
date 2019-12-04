@@ -34,28 +34,47 @@ class Population():
             sum_fitness += indiv.eval_fitness()
         return sum_fitness
 
-    # def new_generation(self):
-    #     new_population = []
-    #     selection_method = geneticMain.SELECTION_METHOD
-    #
-    #
-    #     if(selection_method == "tournament"):
-    #         mating_pool = self.selection_tournament()
-    #     elif(selection_method == "roullete"):
-    #         mating_pool = self.selection_roullete()
-    #
-    #     for _ in range(int(geneticMain.POPULATION_SIZE/2)):
-    #         r1 = np.random.randint(0,len(mating_pool))
-    #         r2 = np.random.randint(0,len(mating_pool))
-    #         mated, new1, new2 = self.two_point_crossover(mating_pool[r1],mating_pool[r2])
-    #         new_population.append(new1)
-    #         new_population.append(new2)
-    #
-    #     for indiv in new_population:
-    #         indiv.mutate()
-    #
-    #     self.individual_list = new_population
-    #     self.generation += 1
+    def selection_tournament(self):
+        population_size = geneticMain.POPULATION_SIZE
+        mating_pool_size = geneticMain.POPULATION_SIZE
+        tournament_size = geneticMain.TOURNAMENT_SIZE
+        mating_pool = []
+        for i in range(mating_pool_size):
+            tournament_pool = []
+            for _ in range(tournament_size):
+                r = np.random.randint(0,population_size)
+                tournament_pool.append(self.__list_of_individuals[r])
+            fittest_indiv = tournament_pool[0]
+
+
+            for indiv in tournament_pool:           #find fittest individual in tournament pool
+                if(indiv.eval_fitness() > fittest_indiv.eval_fitness()):
+                    fittest_indiv = indiv
+            mating_pool.append(fittest_indiv)
+        return mating_pool
+
+    def new_generation(self):
+        new_population_list = []
+        selection_method = geneticMain.SELECTION_METHOD
+
+
+        if(selection_method == "tournament"):
+            mating_pool = self.selection_tournament()
+        else:
+            mating_pool = self.selection_roullete()
+
+        for _ in range(int(geneticMain.POPULATION_SIZE/2)):
+            r1 = np.random.randint(0,len(mating_pool))
+            r2 = np.random.randint(0,len(mating_pool))
+            mated, new1, new2 = self.two_point_crossover(mating_pool[r1],mating_pool[r2])
+            new_population_list.append(new1)
+            new_population_list.append(new2)
+
+        for indiv in new_population_list:
+            indiv.mutate()
+
+        self.individual_list = new_population_list
+        self.__generation += 1
 
     @staticmethod
     def two_point_crossover(parent1: Individual, parent2: Individual):

@@ -24,7 +24,7 @@ POPULATION_SIZE = 10
 MUTATE_PROB = 0.01
 SELECTION_METHOD = "tournament"     #tournament, roulette
 
-CROSSOVER_PROP = 0.75
+CROSSOVER_PROP = 1
 
 
 
