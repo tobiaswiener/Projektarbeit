@@ -19,5 +19,12 @@ class Population():
         random_population = Population(list_of_individuals=list_of_individuals)
         return random_population
 
-
+    def print_genes(self):
+        sum_fitness = 0
+        print("generation " + str(self.__generation))
+        for counter, indiv in enumerate(self.__list_of_individuals):
+            print(str(counter)+": " + "genome: " +str(indiv.__genes.bin) + " fitness: " + str(indiv.__fitness))
+            sum_fitness += indiv.fitness
+        print("sum fitness: " + str(sum_fitness))
+        print("---------------------------------")
 
