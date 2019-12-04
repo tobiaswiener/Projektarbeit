@@ -34,6 +34,7 @@ class Individual:
         return self.__genes
 
     def give_fitness(self):
+        #todo fehler nach mutation
         return self.__fitness
 
     def decode_genome(self):
