@@ -21,19 +21,16 @@ np.random.seed(seed=seed)
 
 
 _POPULATION_SIZE = 10
-
 _MAX_HIDDEN_LAYERS = 4
 _MAX_NEURONS_PER_LAYER = 64
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
-TOURNAMENT_SIZE = 8
-
-BIT_LENGTH_NO_LAYER =int(math.log2(_MAX_NEURONS_PER_LAYER))
-BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
-BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
-
+_TOURNAMENT_SIZE = 8
+_BIT_LENGTH_NO_LAYER =int(math.log2(_MAX_NEURONS_PER_LAYER))
+_BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
+_BIT_LENGTH_CHROMOSOME = _BIT_LENGTH_NO_LAYER + _BIT_LENGTH_HIDDEN_LAYER
 
 """variables to specify"""
-_L = 14
+_L = 8
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -57,12 +54,13 @@ _target = "energy"
 _n_iter = 100
 
 
+
+
 EXACT_GS_LANCZOS_L6 = -1.020297256150904
 EXACT_GS_LANCZOS_L10 = -1.2458475990024203
-
 EXACT = -1.401484038970*_L
 
-directory = "L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
+directory = "logs/L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
 try:
     os.mkdir(directory)
 except(FileExistsError):
@@ -88,7 +86,7 @@ class Individual:
     def random_individual():
         bit_string = ""
 
-        for _ in range(BIT_LENGTH_CHROMOSOME):
+        for _ in range(_BIT_LENGTH_CHROMOSOME):
             r = np.random.randint(0,2)
             bit_string += str(r)
 
@@ -114,16 +112,15 @@ class Individual:
         config = []
         act_func = _ACTIVATION_FUNCTION
         begin_npl = 0
-        end_npl = BIT_LENGTH_NO_LAYER
+        end_npl = _BIT_LENGTH_NO_LAYER
         neurons_per_layer = self.genes[begin_npl:end_npl].uint+1
 
-        begin_hl = BIT_LENGTH_NO_LAYER
-        end_hl = begin_hl + BIT_LENGTH_HIDDEN_LAYER+1
+        begin_hl = _BIT_LENGTH_NO_LAYER
+        end_hl = begin_hl + _BIT_LENGTH_HIDDEN_LAYER + 1
         hidden_layer = self.genes[begin_hl:end_hl].uint+1
         config.append(act_func)
         config.append(neurons_per_layer)
         config.append(hidden_layer)
-
         return config
 
     def create_dicc(self):
@@ -206,10 +203,10 @@ class Individual:
         #         f += 1
         # return f
         f = 0
-        for i in range(BIT_LENGTH_CHROMOSOME):
-            if(self.genes[i] and not(self.genes[(i+1) % BIT_LENGTH_CHROMOSOME])):
+        for i in range(_BIT_LENGTH_CHROMOSOME):
+            if(self.genes[i] and not(self.genes[(i+1) % _BIT_LENGTH_CHROMOSOME])):
                 f += 1
-            elif(not(self.genes[i]) and self.genes[(i+1) % BIT_LENGTH_CHROMOSOME]):
+            elif(not(self.genes[i]) and self.genes[(i+1) % _BIT_LENGTH_CHROMOSOME]):
                 f += 1
             else:
                 pass
@@ -279,7 +276,7 @@ class Individual:
 
 
     def mutate(self, mut_prob = 0.01):
-        for i in range(BIT_LENGTH_CHROMOSOME):
+        for i in range(_BIT_LENGTH_CHROMOSOME):
             if(mut_prob > np.random.rand()):
                 self.genes[i] = not(self.genes[i])
         return self
@@ -355,7 +352,7 @@ class Population:
 
     @staticmethod
     def two_point_crossover(parent1:Individual, parent2:Individual, crossover=0.75):
-        length = BIT_LENGTH_CHROMOSOME
+        length = _BIT_LENGTH_CHROMOSOME
         parent_1_genes = parent1.genes
         parent_2_genes = parent2.genes
 
