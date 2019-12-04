@@ -19,6 +19,38 @@ class Population():
         random_population = Population(list_of_individuals=list_of_individuals)
         return random_population
 
+    @staticmethod
+    def two_point_crossover(parent1: Individual, parent2: Individual):
+        bit_length_chromosome = geneticMain.BIT_LENGTH_CHROMOSOME
+        crossover_prob = geneticMain.CROSSOVER_PROP
+        parent_1_genes = parent1.give_genes().bin
+        parent_2_genes = parent2.give_genes().bin
+
+        if (crossover_prob > np.random.rand()):
+            first_co_point = np.random.randint(0, bit_length_chromosome)
+            second_co_point = np.random.randint(0, bit_length_chromosome)
+            if (first_co_point > second_co_point):
+                temp = first_co_point
+                first_co_point = second_co_point
+                second_co_point = temp
+
+            parent_1_genes_cutted = [parent_1_genes[0:first_co_point], parent_1_genes[first_co_point:second_co_point],
+                                     parent_1_genes[second_co_point:]]
+            parent_2_genes_cutted = [parent_2_genes[0:first_co_point], parent_2_genes[first_co_point:second_co_point],
+                                     parent_2_genes[second_co_point:]]
+
+            genes_offspring_1 = parent_1_genes_cutted[0]
+            genes_offspring_1 += parent_2_genes_cutted[1]
+            genes_offspring_1 += parent_1_genes_cutted[2]
+
+            genes_offspring_2 = parent_2_genes_cutted[0]
+            genes_offspring_2 += parent_1_genes_cutted[1]
+            genes_offspring_2 += parent_2_genes_cutted[2]
+
+            return True, Individual.Individual(genes_offspring_1), Individual.Individual(genes_offspring_2)
+        else:
+            return False, parent1, parent2
+
     def print_genes(self):
         sum_fitness = 0
         print("generation " + str(self.__generation))
@@ -69,32 +101,3 @@ class Population():
         self.__list_of_individuals = new_population_list
         self.__generation += 1
 
-    @staticmethod
-    def two_point_crossover(parent1: Individual, parent2: Individual):
-        bit_length_chromosome = geneticMain.BIT_LENGTH_CHROMOSOME
-        crossover_prob = geneticMain.CROSSOVER_PROP
-        parent_1_genes = parent1.give_genes().bin
-        parent_2_genes = parent2.give_genes().bin
-
-        if (crossover_prob > np.random.rand()):
-            first_co_point = np.random.randint(0, bit_length_chromosome)
-            second_co_point = np.random.randint(0, bit_length_chromosome)
-            if (first_co_point > second_co_point):
-                temp = first_co_point
-                first_co_point = second_co_point
-                second_co_point = temp
-
-            parent_1_genes_cutted = [parent_1_genes[0:first_co_point], parent_1_genes[first_co_point:second_co_point], parent_1_genes[second_co_point:]]
-            parent_2_genes_cutted = [parent_2_genes[0:first_co_point], parent_2_genes[first_co_point:second_co_point], parent_2_genes[second_co_point: ]]
-
-            genes_offspring_1 = parent_1_genes_cutted[0]
-            genes_offspring_1 += parent_2_genes_cutted[1]
-            genes_offspring_1 += parent_1_genes_cutted[2]
-
-            genes_offspring_2 = parent_2_genes_cutted[0]
-            genes_offspring_2 += parent_1_genes_cutted[1]
-            genes_offspring_2 += parent_2_genes_cutted[2]
-
-            return True, Individual.Individual(genes_offspring_1), Individual.Individual(genes_offspring_2)
-        else:
-            return False, parent1, parent2
