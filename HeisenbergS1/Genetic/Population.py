@@ -101,3 +101,6 @@ class Population():
         self.__list_of_individuals = new_population_list
         self.__generation += 1
 
+    def give_generation(self):
+        return self.__generation
+
