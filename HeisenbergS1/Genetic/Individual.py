@@ -16,7 +16,6 @@ class Individual:
 
     def __init__(self, genes: str):
         self.__genes = BitArray("0b" + genes)
-        self.__fitness = self.eval_fitness()
         global CALCULATED_NETWORKS
         if not(self.__genes.bin in CALCULATED_NETWORKS):
             CALCULATED_NETWORKS.append(self.__genes.bin)
@@ -32,10 +31,6 @@ class Individual:
 
     def give_genes(self):
         return self.__genes
-
-    def give_fitness(self):
-        #todo fehler nach mutation
-        return self.__fitness
 
     def decode_genome(self):
         config = []
