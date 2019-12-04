@@ -4,11 +4,12 @@ import math
 import os
 import Individual
 import Population
+import matplotlib.pyplot as plt
 
 
 CLUSTER = False  #True,False
 #setting global seed
-_SEED = 1235
+_SEED = 1234
 np.random.seed(_SEED)
 #specify genes
 MAX_NEURONS_PER_LAYER = 64         #must be mod 2
@@ -29,7 +30,7 @@ CROSSOVER_PROP = 0.75
 
 
 #specify details of network optimization
-L = 8
+L = 12
 J = 1
 #optimizer
 OPTIMIZER = "AdaMax"
@@ -87,13 +88,21 @@ if not (os.path.exists(DIRECTORY)):
 
 
 
+def tournament_test():
+    pop = Population.Population.create_random_population()
+    pop.print_genes()
+    fitnesslist = [[pop.give_generation()], [pop.sum_fitness()]]
+    for gen in range(50):
+        pop.new_generation()
+        fitnesslist[0].append(gen + 1)
+        fitnesslist[1].append(pop.sum_fitness())
+        pop.print_genes()
+    plt.plot(fitnesslist[0], fitnesslist[1], label="Tournament size" + str(3))
+    pop.print_genes()
+    print("Total Number Networks: " , len(Individual.CALCULATED_NETWORKS))
 
 def main():
-    p1 = Population.Population.create_random_population()
-    p1.print_genes()
-    for _ in range(40):
-        p1.new_generation()
-        p1.print_genes()
+    tournament_test()
 
 
 if __name__=="__main__":

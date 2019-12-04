@@ -15,7 +15,7 @@ import os.path
 
 DIFFERENT_NETWORKS_LISTS = []
 
-seed = 21313
+seed = 1234
 np.random.seed(seed=seed)
 
 
@@ -30,7 +30,7 @@ _BIT_LENGTH_HIDDEN_LAYER = int(math.log2(_MAX_HIDDEN_LAYERS))
 _BIT_LENGTH_CHROMOSOME = _BIT_LENGTH_NO_LAYER + _BIT_LENGTH_HIDDEN_LAYER
 
 """variables to specify"""
-_L = 8
+_L = 12
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -466,7 +466,7 @@ def tournament_pool_size():
     plt.legend()
     plt.show()
 
-def test_tournament():
+def est_tournament():
     pop = Population(Population.random_population_list())
     pop.print_genes()
     fitnesslist = [[pop.generation], [pop.sum_fitness()]]
@@ -484,6 +484,6 @@ def main():
     pass
     #tournament_vs_roullete()
     #tournament_pool_size()
-    test_tournament()
+    est_tournament()
 if __name__ == "__main__":
     main()
