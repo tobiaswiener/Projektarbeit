@@ -21,17 +21,17 @@ BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
 BIT_LENGTH_HIDDEN_LAYER = int(math.log2(MAX_HIDDEN_LAYERS))
 BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 #reproduction details
-TOURNAMENT_SIZE = 4
-POPULATION_SIZE = 30
-MUTATE_PROB = 0.01
+TOURNAMENT_SIZE = 4                 #4
+POPULATION_SIZE = 30                #30
+MUTATE_PROB = 0.01                  #0.01
 SELECTION_METHOD = "tournament"     #tournament, roulette
 
-CROSSOVER_PROP = 0.75
+CROSSOVER_PROP = 0.75               #0.75
 
 
 
 #specify details of network optimization
-L = 18
+L = 18       #6-18
 J = 1
 #optimizer
 OPTIMIZER = "AdaMax"
