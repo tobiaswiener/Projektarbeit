@@ -54,7 +54,7 @@ class Individual:
         model = self.decode_genome()
         dicc = {
             "input": {
-                "L": geneticMain.L, "J": geneticMain.L,
+                "L": geneticMain.L, "J": geneticMain.J,
                 "machine": {"type": "FFNN", "model": model},
                 "sampler": {"type": geneticMain.SAMPLER, "d_max": geneticMain.D_MAX},
                 "optimizer": {"type": geneticMain.OPTIMIZER, "alpha": geneticMain.ALPHA, "beta1": geneticMain.BETA1,
