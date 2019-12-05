@@ -187,8 +187,7 @@ class Individual:
             variance= math.inf
             print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
         except OverflowError:
-            delta_energy_mean = math.inf
-
+            variance = math.inf
         fitness = 1/(delta_energy_mean+variance)
         return fitness
 
