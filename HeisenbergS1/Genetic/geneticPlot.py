@@ -12,7 +12,7 @@ import geneticLoad as load
 import geneticMain
 from typing import List
 
-
+#todo clean up
 
 #todo get Constants from geneticMain.py
 Y_MIN_From_Exact = -1

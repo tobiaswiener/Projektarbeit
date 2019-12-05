@@ -31,7 +31,7 @@ CROSSOVER_PROP = 0.75               #0.75
 
 
 #specify details of network optimization
-L = 6       #6-18
+L = 12       #6-18
 J = 1
 #optimizer
 OPTIMIZER = "AdaMax"
