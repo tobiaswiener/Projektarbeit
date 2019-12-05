@@ -58,6 +58,8 @@ class Population():
             print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.give_fitness()))
             sum_fitness += indiv.give_fitness()
         print("sum fitness: " + str(sum_fitness))
+        fittest = self.give_fittest_individual()
+        print("fittest genome: " + str(fittest.give_genes().bin) + " fitness: " + str(fittest.give_fitness()))
         print("---------------------------------")
 
     def sum_fitness(self):
