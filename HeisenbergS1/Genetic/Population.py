@@ -105,3 +105,10 @@ class Population():
         return self.__generation
 
     #todo implement give_fittest_individual method
+    def give_fittest_individual(self):
+        fittest = self.__list_of_individuals[0]
+        for indiv in self.__list_of_individuals:
+            if indiv.give_fitness() > fittest.give_fitness():
+                fittest = indiv
+
+        return fittest
