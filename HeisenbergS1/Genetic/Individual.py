@@ -135,8 +135,18 @@ class Individual:
             self.run_genome()
         data=[]
 
+        if geneticMain.CLUSTER:
+            try:
+                with open(geneticMain.DIRECTORY + "/" + file_name +".log") as f:
+                    lines = f.readlines()
+                try:
+                    data = json.loads(lines[0])["Output"]
+                except ValueError as err:
+                    print(err)
+            except:
+                print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
 
-        if not geneticMain.CLUSTER:
+        else:
             try:
                 with open(geneticMain.DIRECTORY + "/" + file_name + ".log") as f:
                     lines = f.readlines()
@@ -150,32 +160,36 @@ class Individual:
                 print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
                 pass
 
-            x = 50
-            #Difference between Energy Mean of last x Iterations and Exact Value
+        x = 50
+        #Difference between Energy Mean of last x Iterations and Exact Value
+        delta_energy_mean = math.inf
+        energy_mean = math.inf
+        energy_sum = 0
+        try:
+            for iteration in data[-x:]:          #last 50 iterations
+                energy_sum += iteration["Energy"]["Mean"]
+            energy_mean = energy_sum/len(data[-x:])
+            delta_energy_mean = np.abs(energy_mean-geneticMain.EXACT_GS)
+        except ZeroDivisionError:
             delta_energy_mean = math.inf
-            energy_mean = math.inf
-            energy_sum = 0
-            try:
-                for iteration in data[-x:]:          #last 50 iterations
-                    energy_sum += iteration["Energy"]["Mean"]
-                energy_mean = energy_sum/len(data[-x:])
-                delta_energy_mean = np.abs(energy_mean-geneticMain.EXACT_GS)
-            except ZeroDivisionError:
-                delta_energy_mean = math.inf
-                print("fitness evaluation (mean) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
+            print("fitness evaluation (mean) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
+        except OverflowError:
+            delta_energy_mean = math.inf
 
+        #Varianz of last x Iterations
+        variance = 0
+        try: #todo numerical vaalue out of range
+            for iteration in data[-x:]:
+                #variance += (iteration["Energy"]["Mean"]-energy_mean)**2          #todo try which one
+                variance += (iteration["Energy"]["Mean"]-geneticMain.EXACT_GS)**2
+            variance = variance / len(data[-x:])
+        except ZeroDivisionError:
+            variance= math.inf
+            print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
+        except OverflowError:
+            delta_energy_mean = math.inf
 
-            #Varianz of last x Iterations
-            variance = 0
-            try: #todo numerical vaalue out of range
-                for iteration in data[-x:]:
-                    #variance += (iteration["Energy"]["Mean"]-energy_mean)**2          #todo try which one
-                    variance += (iteration["Energy"]["Mean"]-geneticMain.EXACT_GS)**2
-                variance = variance / len(data[-x:])
-            except ZeroDivisionError:
-                variance= math.inf
-                print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
-            fitness = 1/(delta_energy_mean+variance)
+        fitness = 1/(delta_energy_mean+variance)
         return fitness
 
     def mutate(self):
