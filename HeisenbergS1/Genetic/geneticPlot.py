@@ -54,7 +54,7 @@ def plot_file(file_name: str, folder:str):
         energy.append(iteration["Energy"]["Mean"])
     plt.rcParams.update({'font.size': FONT_SIZE})
 
-    plt.plot(iters, energy, color='C8', label=file_name)
+    plt.plot(iters, energy, color='red', label=file_name,linewidth=4)
     plt.axhline(y=exact_gs_energy_infinity, xmin=0,
                 xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
     plt.axhline(y=exact_gs_energy_L10, xmin=0,
