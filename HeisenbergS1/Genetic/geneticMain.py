@@ -11,7 +11,7 @@ import netket as nk
 
 CLUSTER = False  #True,False
 #setting global seed
-_SEED = 144444
+_SEED = 1234
 np.random.seed(_SEED)
 #specify genes
 MAX_NEURONS_PER_LAYER = 64         #must be mod 2
@@ -77,8 +77,8 @@ else:
 
 #global working directory
 DIRECTORY = "logs/L%d_%d_%d_%s_%s_%s" %(L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,ACTIVATION_FUNCTION,N_ITER,METHOD)
-if not (os.path.exists(DIRECTORY)):
-    os.mkdir(DIRECTORY)
+#if not (os.path.exists(DIRECTORY)):
+#    os.mkdir(DIRECTORY)
 
 
 
@@ -128,8 +128,8 @@ def tournament_cluster():
 
 
 def main():
-    tournament_cluster()
-    #tournament_plot_all()
+    #tournament_cluster()
+    tournament_plot_all()
 
 if __name__=="__main__":
     main()
