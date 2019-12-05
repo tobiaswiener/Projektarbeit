@@ -8,7 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
-import SamplerTests.load as load
+import geneticLoad as load
+import geneticMain
 from typing import List
 
 
@@ -55,10 +56,8 @@ def plot_file(file_name: str, folder:str):
     plt.rcParams.update({'font.size': FONT_SIZE})
 
     plt.plot(iters, energy, color='red', label=file_name,linewidth=4)
-    plt.axhline(y=exact_gs_energy_infinity, xmin=0,
+    plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                 xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
-    plt.axhline(y=exact_gs_energy_L10, xmin=0,
-                xmax=iters[-1], linewidth=2, color='k', label='ExactLanczos')
     plt.title(file_name)
     plt.ylabel('Energy')
     plt.xlabel('Iteration')
@@ -102,7 +101,7 @@ def plot_all_log_file_from_folder(folder: str):
         plt.rcParams.update({'font.size': 5})
         ax1 = plt.subplot(num_plots_horizontal, num_plots_vertical, counter + 1)
         plt.plot(iters, energy, color='C8', label=name)
-        plt.axhline(y=exact_gs_energy, xmin=0,
+        plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                     xmax=iters[-1], linewidth=2, color='k', label='Exact')
         #plt.plot(iters,np.zeros_like(iters))
         plt.title(name)
@@ -177,10 +176,6 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
         all_energy.append(energy)
         all_names.append(name)
     plt.rcParams.update({'font.size': 8})
-    plt.axhline(y=exact_gs_energy_infinty, xmin=0,
-                xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
-    plt.axhline(y=exact_gs_energy_L10, xmin=0,
-                xmax=iters[-1], linewidth=2, color='k', label='ExactLanczos')
     #plt.plot(iters,np.zeros_like(iters))
     plt.title(name)
     plt.ylabel('Energy')
