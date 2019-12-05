@@ -178,7 +178,7 @@ class Individual:
 
         #Varianz of last x Iterations
         variance = 0
-        try: #todo numerical vaalue out of range
+        try:
             for iteration in data[-x:]:
                 #variance += (iteration["Energy"]["Mean"]-energy_mean)**2          #todo try which one
                 variance += (iteration["Energy"]["Mean"]-geneticMain.EXACT_GS)**2
@@ -186,7 +186,7 @@ class Individual:
         except ZeroDivisionError:
             variance= math.inf
             print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
-        except OverflowError:
+        except OverflowError: #todo right exception?
             variance = math.inf
         fitness = 1/(delta_energy_mean+variance)
         return fitness
