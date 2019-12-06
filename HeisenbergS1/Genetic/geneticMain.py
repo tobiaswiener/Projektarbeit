@@ -11,7 +11,7 @@ import netket as nk
 
 CLUSTER = False  #True,False
 #setting global seed
-_SEED = 1234
+_SEED = 1234545
 np.random.seed(_SEED)
 #specify genes
 MAX_NEURONS_PER_LAYER = 64         #must be mod 2
@@ -22,8 +22,8 @@ BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
 BIT_LENGTH_HIDDEN_LAYER = int(math.log2(MAX_HIDDEN_LAYERS))
 BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 #reproduction details
-TOURNAMENT_SIZE = 4                 #4
-POPULATION_SIZE = 10                #30
+TOURNAMENT_SIZE = 2                 #4
+POPULATION_SIZE = 10               #30
 MUTATE_PROB = 0.01                  #0.01
 SELECTION_METHOD = "tournament"     #tournament, roulette
 CROSSOVER_PROP = 0.75               #0.75
@@ -31,7 +31,7 @@ CROSSOVER_PROP = 0.75               #0.75
 
 
 #specify details of network optimization
-L = 12       #6-18
+L = 20       #6-18
 J = 1
 #optimizer
 OPTIMIZER = "AdaMax"
@@ -46,12 +46,12 @@ D_MAX = 5
 DISCARDED_SAMPLES = 100
 DISCARDED_SAMPLES_ON_INIT = 0
 METHOD = "Gd"               #["Gd","Sr"]
-N_SAMPLES = 1000
+N_SAMPLES = 1000    #todo include in Filename
 DIAG_SHIFT = 10
 USE_ITERATIVE = True   #[False,True]
 USE_CHOLESKY = True         #[False,True]
 TARGET = "energy"
-N_ITER = 1000
+N_ITER = 100
 
 #exact Solutions
 _EXACT_GS_L6 = -1.020297256150904
@@ -77,8 +77,8 @@ else:
 
 #global working directory
 DIRECTORY = "logs/L%d_%d_%d_%s_%s_%s" %(L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,ACTIVATION_FUNCTION,N_ITER,METHOD)
-#if not (os.path.exists(DIRECTORY)):
-#    os.mkdir(DIRECTORY)
+if not (os.path.exists(DIRECTORY)):
+    os.mkdir(DIRECTORY)
 
 
 
@@ -104,7 +104,7 @@ def tournament_plot_all():
     pop = Population.Population.create_random_population()
     pop.print_genes()
 
-    for gen in range(100):
+    for gen in range(20):
         pop.new_generation()
         pop.print_genes()
     fittest_genome = pop.give_fittest_individual().give_genes().bin
@@ -118,7 +118,7 @@ def tournament_cluster():
     pop = Population.Population.create_random_population()
     if(nk.MPI.rank()==0):
         pop.print_genes()
-    for gen in range(100):
+    for gen in range(0):
         pop.new_generation()
         if (nk.MPI.rank() == 0):
             pop.print_genes()

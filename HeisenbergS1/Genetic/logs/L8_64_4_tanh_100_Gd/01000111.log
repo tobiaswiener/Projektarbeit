@@ -1,0 +1,5 @@
+{"Output": [
+{"Acceptance":[0.92],"Energy":{"Mean":7.117782150503121,"Sigma":0.21245502830153967,"Taucorr":0.007950080604315013},"EnergyVariance":{"Mean":4.343144838308855,"Sigma":0.5969904798282967,"Taucorr":0.04866768766273544},"Iteration":0} 
+]}
+{"input": {"L": 8, "J": 8, "machine": {"type": "FFNN", "model": ["tanh", 18, 4]}, "sampler": {"type": "MetropolisHop", "d_max": 5}, "optimizer": {"type": "AdaMax", "alpha": 0.001, "beta1": 0.9, "beta2": 0.999, "epscut": 1e-07}, "VMC": {"n_samples": 100, "discarded_samples": 100, "discarded_samples_on_init": 0, "target": "energy", "method": "Sr", "diag_shift": 10, "use_iterative": true, "use_cholesky": true}, "n_iter": 1}}
+duration: -0.042346954345703125
