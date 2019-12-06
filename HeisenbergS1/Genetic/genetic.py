@@ -15,15 +15,15 @@ import copy
 
 DIFFERENT_NETWORKS_LISTS = []
 
-seed = 21313
+seed = 35415
 np.random.seed(seed=seed)
 
 
 
-_POPULATION_SIZE = 10
+_POPULATION_SIZE = 100000
 
-_MAX_HIDDEN_LAYERS = 4
-_MAX_NEURONS_PER_LAYER = 64
+_MAX_HIDDEN_LAYERS = 8
+_MAX_NEURONS_PER_LAYER = 256
 _ACTIVATION_FUNCTION = "tanh"  # tanh,relu,lncosh
 TOURNAMENT_SIZE = 8
 
@@ -33,7 +33,7 @@ BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 
 
 """variables to specify"""
-_L = 14
+_L = 24
 _J = 1
 _seed = 12345
 """Optimizer"""
@@ -62,7 +62,7 @@ EXACT_GS_LANCZOS_L10 = -1.2458475990024203
 
 EXACT = -1.401484038970*_L
 
-directory = "L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
+directory = "logs/L%d_%d_%d_%s" %(_L,_MAX_NEURONS_PER_LAYER,_MAX_HIDDEN_LAYERS,_ACTIVATION_FUNCTION)
 try:
     os.mkdir(directory)
 except(FileExistsError):
