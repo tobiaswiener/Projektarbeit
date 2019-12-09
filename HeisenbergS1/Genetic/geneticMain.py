@@ -128,8 +128,9 @@ def tournament_cluster():
 
 
 def main():
-    tournament_cluster()
-    #tournament_plot_all()
 
+    #tournament_cluster()
+    tournament_plot_all()
+    pass
 if __name__=="__main__":
     main()

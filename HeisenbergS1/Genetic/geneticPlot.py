@@ -30,14 +30,25 @@ def is_json(myjson: str):
 
 def plot_file(file_name: str, folder:str):
     data = []
+
     with open(folder + "/" + file_name) as f:
-        line = f.readlines()
-    for line in line:
-        try:
-            b = json.loads(line[0:len(line) - 2])
-            data.append(b)
-        except ValueError as e:
-            pass
+        lines = f.readlines()
+
+    try:
+        data = json.loads(lines[0])
+    except ValueError as err:
+        print(err)
+
+    iters = []
+    energy = []
+    try:
+        for it in data["Output"]:
+            iters.append(it["Iteration"])
+            energy.append(it["Energy"]["Mean"])
+    except:
+        print(file_name, "failed")
+
+
 
     input = load.specs_runnable.log_to_input(folder=folder, file_name=file_name)
     try:
@@ -180,7 +191,7 @@ def plot_folder_in_same_plot20(folder: str,label:str = "name"):  #legend=["name"
     plt.show()
 
 
-def plot_folder_in_same_plot_cluster(folder: str,label:str = "name"):
+def plot_folder_in_same_plot(folder: str,label:str = "name"):
 
     filename_list = []
     for filename in os.listdir(folder + "/"):
