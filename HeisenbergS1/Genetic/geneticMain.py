@@ -76,10 +76,12 @@ else:
 
 
 #global working directory
-DIRECTORY = "logs/L%d_%d_%d_%s_%s_%s" %(L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,ACTIVATION_FUNCTION,N_ITER,METHOD)
-if not (os.path.exists(DIRECTORY)):
-    os.mkdir(DIRECTORY)
+DIRECTORY = "logs/L%d_%d_%d_I%d_S%d_%s" %(L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
 
+try:
+    os.mkdir(DIRECTORY)
+except:
+    pass
 
 
 
