@@ -1,5 +1,5 @@
-# Import netket library
-import netket as nk
+# Import netket20 library
+import netket20 as nk
 # Import Json, this will be needed to examine log files
 import json
 # Helper libraries

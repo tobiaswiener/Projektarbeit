@@ -18,9 +18,7 @@ from typing import List
 Y_MIN_From_Exact = -1
 Y_MAX_From_Exact = 30
 FONT_SIZE = 5
-EXACT_ENERGY_LANCZOS_L10 = -1.2458475990024203
-EXACT_ENERGY_PER_SITE_L_INFINTY =  -1.401484038970
-EXACT_GS_LANCZOS_L6 = -6.121783536905424
+
 
 def is_json(myjson: str):
   try:
@@ -46,11 +44,10 @@ def plot_file(file_name: str, folder:str):
         L = input["input"]["L"]
     except KeyError:
         print(file_name + " is not yet finished")
-    exact_gs_energy_infinity = EXACT_ENERGY_PER_SITE_L_INFINTY * L
-    exact_gs_energy_L10 = EXACT_ENERGY_LANCZOS_L10*L
+
     iters = []
     energy = []
-    for iteration in data:
+    for iteration in data["Output"]:
         iters.append(iteration["Iteration"])
         energy.append(iteration["Energy"]["Mean"])
     plt.rcParams.update({'font.size': FONT_SIZE})
@@ -61,7 +58,7 @@ def plot_file(file_name: str, folder:str):
     plt.title(file_name)
     plt.ylabel('Energy')
     plt.xlabel('Iteration')
-    plt.axis([0, iters[-1], exact_gs_energy_infinity+Y_MIN_From_Exact, exact_gs_energy_infinity+Y_MAX_From_Exact])
+    plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
     plt.show()
 
 
@@ -81,7 +78,7 @@ def plot_all_log_file_from_folder(folder: str):
             L = input["input"]["L"]
         except KeyError:
             print(name + " is not yet finished")
-        exact_gs_energy = EXACT_ENERGY_PER_SITE_L_INFINTY*L
+        exact_gs_energy = geneticMain.EXACT_GS
         with open(folder + "/" + name) as f:
             line = f.readlines()
         for line in line:
@@ -108,13 +105,13 @@ def plot_all_log_file_from_folder(folder: str):
         ax1.set_ylabel('Energy')
         ax1.set_xlabel('Iteration')
         ax1.xaxis.set_visible(True)
-        plt.axis([0, iters[-1], exact_gs_energy+Y_MIN_From_Exact, exact_gs_energy+Y_MAX_From_Exact])
+        plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
 
 
     plt.show()
 
 
-def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","machine","sampler","optimizer","VMC"]
+def plot_folder_in_same_plot20(folder: str,label:str = "name"):  #legend=["name","machine","sampler","optimizer","VMC"]
 
     filename_list = []
     for filename in os.listdir(folder + "/"):
@@ -144,9 +141,6 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
         except KeyError:
             print(name + " is not yet finished")
 
-
-        exact_gs_energy_infinty = EXACT_ENERGY_PER_SITE_L_INFINTY*L
-        exact_gs_energy_L10 = EXACT_ENERGY_LANCZOS_L10*L
         with open(folder + "/" + name) as f:
             lines = f.readlines()
         for line in lines:
@@ -180,7 +174,7 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):  #legend=["name","
     plt.title(name)
     plt.ylabel('Energy')
     plt.xlabel('Iteration')
-    plt.axis([0, iters[-1], exact_gs_energy_infinty+Y_MIN_From_Exact, exact_gs_energy_infinty+Y_MAX_From_Exact])
+    plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
 
     plt.legend()
     plt.show()
@@ -215,8 +209,6 @@ def plot_folder_in_same_plot_cluster(folder: str,label:str = "name"):
             print(name + " is not yet finished")
 
 
-        exact_gs_energy_infinty = EXACT_ENERGY_PER_SITE_L_INFINTY*L
-        exact_gs_energy_L10 = EXACT_ENERGY_LANCZOS_L10*L
 
         with open(folder + "/" + name) as f:
             lines = f.readlines()
@@ -250,15 +242,13 @@ def plot_folder_in_same_plot_cluster(folder: str,label:str = "name"):
         all_energy.append(energy)
         all_names.append(name)
     plt.rcParams.update({'font.size': 8})
-    plt.axhline(y=exact_gs_energy_infinty, xmin=0,
-                 xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
-    plt.axhline(y=exact_gs_energy_L10, xmin=0,
+    plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                  xmax=iters[-1], linewidth=2, color='blue', label='ExactLanczos')
     plt.plot(iters,np.zeros_like(iters))
     plt.title(name)
     plt.ylabel('Energy')
     plt.xlabel('Iteration')
-    plt.axis([0, iters[-1], exact_gs_energy_infinty+Y_MIN_From_Exact, exact_gs_energy_infinty+Y_MAX_From_Exact])
+    plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
 
     plt.legend()
     plt.show()

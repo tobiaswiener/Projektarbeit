@@ -1,4 +1,4 @@
-import netket as nk
+import netket20 as nk
 import time
 import matplotlib.pyplot as plt
 

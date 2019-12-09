@@ -10,7 +10,7 @@ def generateNN(length, coupling):
         edge_colors.append([i, (i + 1) % length, 1])
         edge_colors.append([i, (i + 2) % length, 2])
 
-    # Define the netket graph object
+    # Define the netket20 graph object
     g = nk.graph.CustomGraph(edge_colors)
     hi = nk.hilbert.Spin(graph=g, s=1)
 

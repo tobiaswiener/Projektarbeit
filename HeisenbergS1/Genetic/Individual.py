@@ -88,11 +88,11 @@ class Individual:
         for layer in layers:
             layer.init_random_parameters(seed=1234,sigma=0.01)
         ma = nk.machine.FFNN(hilbert, layers)
-
         if (geneticMain.SAMPLER == "MetropolisLocal"):
             sa = nk.sampler.MetropolisLocal(machine=ma)
         elif (geneticMain.SAMPLER == "MetropolisHop"):
             sa = nk.sampler.MetropolisHop(machine=ma, d_max=geneticMain.D_MAX)
+
         if (geneticMain.OPTIMIZER == "AdaMax"):
             opt = nk.optimizer.AdaMax(alpha=geneticMain.ALPHA, beta1=geneticMain.BETA1, beta2=geneticMain.BETA2,
                                       epscut=geneticMain.EPSCUT)

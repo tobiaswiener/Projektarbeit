@@ -9,9 +9,9 @@ import geneticPlot
 import netket as nk
 
 
-CLUSTER = False  #True,False
+CLUSTER = True  #True,False
 #setting global seed
-_SEED = 144444
+_SEED = 1234
 np.random.seed(_SEED)
 #specify genes
 MAX_NEURONS_PER_LAYER = 64         #must be mod 2
@@ -31,7 +31,7 @@ CROSSOVER_PROP = 0.75               #0.75
 
 
 #specify details of network optimization
-L = 12       #6-18
+L = 6       #6-18
 J = 1
 #optimizer
 OPTIMIZER = "AdaMax"
@@ -40,18 +40,18 @@ BETA1=0.9 #0.9
 BETA2=0.999 #0.999
 EPSCUT=1e-07 #1e-07
 #sampler
-SAMPLER = "MetropolisHop"    #["MetropolisLocal","MetropolisHop"]
+SAMPLER = "MetropolisLocal"    #["MetropolisLocal","MetropolisHop"]
 D_MAX = 5
 #VMC
 DISCARDED_SAMPLES = 100
 DISCARDED_SAMPLES_ON_INIT = 0
 METHOD = "Gd"               #["Gd","Sr"]
-N_SAMPLES = 1000
+N_SAMPLES = 100
 DIAG_SHIFT = 10
 USE_ITERATIVE = True   #[False,True]
 USE_CHOLESKY = True         #[False,True]
 TARGET = "energy"
-N_ITER = 1000
+N_ITER = 99
 
 #exact Solutions
 _EXACT_GS_L6 = -1.020297256150904

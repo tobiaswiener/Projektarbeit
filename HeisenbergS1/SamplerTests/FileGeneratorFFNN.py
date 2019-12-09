@@ -6,19 +6,19 @@ import itertools
 import os
 
 
-directory = "L30SrGd"
+directory = "pythonfailtest"
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [30]
+_L = [6]
 _J = [1]
 
 _seed = [12345]
 _model = [
-        [10, ["tanh", "tanh", "tanh", "tanh", "tanh", "tanh"]]
+        [2, ["tanh", "tanh"]]
         ]
 
 
@@ -31,7 +31,7 @@ _beta2=[0.999] #0.999
 _epscut=[1e-07] #1e-07
 
 """Sampler"""
-_sampler = ["MetropolisHop"]    #["MetropolisLocal","MetropolisHop"]
+_sampler = ["MetropolisLocal"]    #["MetropolisLocal","MetropolisHop"]
 _d_max = [5]
 
 
