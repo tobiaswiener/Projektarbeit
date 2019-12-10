@@ -138,8 +138,8 @@ def tournament_cluster():
 def main():
 
     #tournament_cluster()
-    #tournament_plot_all()
-    Population.Population.create_all()
+    tournament_plot_all()
+    #Population.Population.create_all()
     pass
 if __name__=="__main__":
     main()
