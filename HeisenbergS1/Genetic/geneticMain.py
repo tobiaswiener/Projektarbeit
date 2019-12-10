@@ -31,6 +31,7 @@ POPULATION_SIZE = int(config["reproduction"]["POPULATION_SIZE"])
 MUTATE_PROB = float(config["reproduction"]["MUTATE_PROB"])
 SELECTION_METHOD = config["reproduction"]["SELECTION_METHOD"]
 CROSSOVER_PROP = float(config["reproduction"]["CROSSOVER_PROP"])
+GENERATIONS = int(config["reproduction"]["GENERATIONS"])
 
 
 
@@ -111,7 +112,7 @@ def tournament_plot_all():
     pop = Population.Population.create_random_population()
     pop.print_genes()
 
-    for gen in range(15):
+    for gen in range(GENERATIONS):
         pop.new_generation()
         pop.print_genes()
     fittest_genome = pop.give_fittest_individual().give_genes().bin
@@ -125,7 +126,7 @@ def tournament_cluster():
     pop = Population.Population.create_random_population()
     if(nk.MPI.rank()==0):
         pop.print_genes()
-    for gen in range(100):
+    for gen in range(GENERATIONS):
         pop.new_generation()
         if (nk.MPI.rank() == 0):
             pop.print_genes()
