@@ -70,6 +70,7 @@ def plot_file(file_name: str, folder:str):
     plt.ylabel('Energy')
     plt.xlabel('Iteration')
     plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
+    plt.legend()
     plt.show()
 
 
