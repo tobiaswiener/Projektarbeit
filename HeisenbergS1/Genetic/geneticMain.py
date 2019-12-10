@@ -6,59 +6,65 @@ import Population
 import matplotlib.pyplot as plt
 import geneticPlot
 import netket as nk
+import configparser
+
+
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 
 CLUSTER = True  #True,False
 #setting global seed
-_SEED = 1234
+_SEED = int(config["misc"]["_SEED"])
 np.random.seed(_SEED)
 #specify genes
-MAX_NEURONS_PER_LAYER = 64         #must be mod 2
-MAX_HIDDEN_LAYERS = 4              #must be mod 2
-ACTIVATION_FUNCTION = "tanh"       #tanh, relu, lncosh
+MAX_NEURONS_PER_LAYER = int(config["genes"]["MAX_NEURONS_PER_LAYER"])
+MAX_HIDDEN_LAYERS = int(config["genes"]["MAX_HIDDEN_LAYERS"])
+ACTIVATION_FUNCTION = config["genes"]["ACTIVATION_FUNCTION"]
 #calculate bit lengths of genes
 BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
 BIT_LENGTH_HIDDEN_LAYER = int(math.log2(MAX_HIDDEN_LAYERS))
 BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 #reproduction details
-TOURNAMENT_SIZE = 4                 #4
-POPULATION_SIZE = 15                #30
-MUTATE_PROB = 0.01                  #0.01
-SELECTION_METHOD = "tournament"     #tournament, roulette
-CROSSOVER_PROP = 0.75               #0.75
+TOURNAMENT_SIZE = int(config["reproduction"]["TOURNAMENT_SIZE"])
+POPULATION_SIZE = int(config["reproduction"]["POPULATION_SIZE"])
+MUTATE_PROB = float(config["reproduction"]["MUTATE_PROB"])
+SELECTION_METHOD = config["reproduction"]["SELECTION_METHOD"]
+CROSSOVER_PROP = float(config["reproduction"]["CROSSOVER_PROP"])
 
 
 
 #specify details of network optimization
-L = 12       #6-18
-J = 1
+L = int(config["model"]["L"])       #6-18
+J = int(config["model"]["J"])
 #optimizer
-OPTIMIZER = "AdaMax"
-ALPHA=0.001 #0.001
-BETA1=0.9 #0.9
-BETA2=0.999 #0.999
-EPSCUT=1e-07 #1e-07
+OPTIMIZER = config["optimizer"]["OPTIMIZER"]
+ALPHA= float(config["optimizer"]["ALPHA"])
+BETA1= float(config["optimizer"]["BETA1"])
+BETA2= float(config["optimizer"]["BETA2"])
+EPSCUT=float(config["optimizer"]["EPSCUT"])
+
 #sampler
-SAMPLER = "MetropolisLocal"    #["MetropolisLocal","MetropolisHop"]
-D_MAX = 5
+SAMPLER = config["sampler"]["SAMPLER"]
+D_MAX = config["sampler"]["D_MAX"]
 #VMC
-DISCARDED_SAMPLES = 100
-DISCARDED_SAMPLES_ON_INIT = 0
-METHOD = "Gd"               #["Gd","Sr"]
-N_SAMPLES = 100
-DIAG_SHIFT = 10
-USE_ITERATIVE = True   #[False,True]
-USE_CHOLESKY = True         #[False,True]
-TARGET = "energy"
-N_ITER = 100
+DISCARDED_SAMPLES = int(config["VMC"]["DISCARDED_SAMPLES"])
+DISCARDED_SAMPLES_ON_INIT = int(config["VMC"]["DISCARDED_SAMPLES_ON_INIT"])
+METHOD = config["VMC"]["METHOD"]
+N_SAMPLES = int(config["VMC"]["N_SAMPLES"])
+DIAG_SHIFT = int(config["VMC"]["DIAG_SHIFT"])
+USE_ITERATIVE = config["VMC"].getboolean("USE_ITERATIVE")
+USE_CHOLESKY = config["VMC"].getboolean("USE_CHOLESKY")
+TARGET = config["VMC"]["TARGET"]
+N_ITER = int(config["VMC"]["N_ITER"])
 
 #exact Solutions
-_EXACT_GS_L6 = -1.020297256150904
-_EXACT_GS_L8 = -1.167949517433288
-_EXACT_GS_L10 = -1.2458475990024203
-_EXACT_GS_L12 = -1.2904796001439305
-_EXACT_GS_L14 = -1.315908522095936
-_EXACT_GS_INFINITY = -1.401484038970
+_EXACT_GS_L6 = float(config["exactSolutions"]["_EXACT_GS_L6"])
+_EXACT_GS_L8 = float(config["exactSolutions"]["_EXACT_GS_L8"])
+_EXACT_GS_L10 = float(config["exactSolutions"]["_EXACT_GS_L10"])
+_EXACT_GS_L12 = float(config["exactSolutions"]["_EXACT_GS_L12"])
+_EXACT_GS_L14 = float(config["exactSolutions"]["_EXACT_GS_L14"])
+_EXACT_GS_INFINITY = float(config["exactSolutions"]["_EXACT_GS_INFINITY"])
 
 if L==6:
     EXACT_GS = L*_EXACT_GS_L6
@@ -131,8 +137,8 @@ def tournament_cluster():
 def main():
 
     #tournament_cluster()
-    tournament_plot_all()
-    #Population.Population.create_all()
+    #tournament_plot_all()
+    Population.Population.create_all()
     pass
 if __name__=="__main__":
     main()
