@@ -221,5 +221,7 @@ class specs_runnable:
         try:
             a = json.loads(lines[-2])
         except:
-            print(file_name,"bah")
+            if nk.MPI.rank() == 0:
+                print(file_name,"input load failed")
+            pass
         return a

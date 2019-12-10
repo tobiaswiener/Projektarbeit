@@ -143,7 +143,8 @@ class Individual:
             except ValueError as err:
                 print(err)
         except:
-            print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
+            if nk.MPI.rank() == 0:
+                print("RANK %d: %s/%s.log failed" %(nk.MPI.rank(),geneticMain.DIRECTORY,file_name))
             pass
 
         x = 50
@@ -159,9 +160,12 @@ class Individual:
 
         except ZeroDivisionError:
             delta_energy_mean = math.inf
-            print("fitness evaluation (mean) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
+            if nk.MPI.rank() == 0:
+                print("fitness evaluation (mean,zerodivision) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
         except OverflowError:
             delta_energy_mean = math.inf
+            if nk.MPI.rank() == 0:
+                print("fitness evaluation (mean,overflow) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
 
 
         #Varianz of last x Iterations
@@ -173,9 +177,12 @@ class Individual:
             variance = variance / len(data[-x:])
         except ZeroDivisionError:
             variance= math.inf
-            print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
+            if nk.MPI.rank() == 0:
+                print("fitness evaluation (varianz,zerodivision) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
         except OverflowError:
             delta_energy_mean = math.inf
+            if nk.MPI.rank() == 0:
+                print("fitness evaluation (variance,overflow) for %s/%s failed" % (geneticMain.DIRECTORY, file_name))
         fitness = 1/(delta_energy_mean+variance)
         return fitness
 

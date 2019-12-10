@@ -29,46 +29,49 @@ def is_json(myjson: str):
 
 
 def plot_file(file_name: str, folder:str):
-    data = []
+    if nk.MPI.rank() == 0:
+        data = []
 
-    with open(folder + "/" + file_name) as f:
-        lines = f.readlines()
+        with open(folder + "/" + file_name) as f:
+            lines = f.readlines()
 
-    try:
-        data = json.loads(lines[0])
-    except ValueError as err:
-        print(err)
+        try:
+            data = json.loads(lines[0])
+        except ValueError as err:
+            print(err)
 
-    iters = []
-    energy = []
-    try:
-        for it in data["Output"]:
-            iters.append(it["Iteration"])
-            energy.append(it["Energy"]["Mean"])
-    except:
-        print(file_name, "failed")
-    input = load.specs_runnable.log_to_input(folder=folder, file_name=file_name)
-    try:
-        L = input["input"]["L"]
-    except KeyError:
-        print(file_name + " is not yet finished")
+        iters = []
+        energy = []
+        try:
+            for it in data["Output"]:
+                iters.append(it["Iteration"])
+                energy.append(it["Energy"]["Mean"])
+        except:
+            print(file_name, "failed")
+        input = load.specs_runnable.log_to_input(folder=folder, file_name=file_name)
+        try:
+            L = input["input"]["L"]
+        except KeyError:
+            print(file_name + " is not yet finished")
 
-    iters = []
-    energy = []
-    for iteration in data["Output"]:
-        iters.append(iteration["Iteration"])
-        energy.append(iteration["Energy"]["Mean"])
-    plt.rcParams.update({'font.size': FONT_SIZE})
+        iters = []
+        energy = []
+        for iteration in data["Output"]:
+            iters.append(iteration["Iteration"])
+            energy.append(iteration["Energy"]["Mean"])
+        plt.rcParams.update({'font.size': FONT_SIZE})
 
-    plt.plot(iters, energy, color='red', label=input["input"]["machine"],linewidth=4)
-    plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
-                xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
-    plt.title(file_name)
-    plt.ylabel('Energy')
-    plt.xlabel('Iteration')
-    plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
-    plt.legend()
-    plt.show()
+        plt.plot(iters, energy, color='red', label=input["input"]["machine"],linewidth=4)
+        plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
+                    xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
+        plt.title(file_name)
+        plt.ylabel('Energy')
+        plt.xlabel('Iteration')
+        plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
+        plt.legend()
+        plt.show()
+    else:
+        pass
 
 
 
@@ -190,74 +193,80 @@ def plot_folder_in_same_plot20(folder: str,label:str = "name"):  #legend=["name"
 
 
 def plot_folder_in_same_plot(folder: str,label:str = "name"):
+    if (nk.MPI.rank() == 0):
+        filename_list = []
+        for filename in os.listdir(folder + "/"):
+            if filename.endswith(".log"):
+                filename_list.append(filename)
+        number_plots = len(filename_list)
+        all_iters = []
+        all_energy = []
+        all_names = []
+        L = -1
+        machine = "machine"
+        sampler = "sampler"
+        optimizer = "optimizer"
+        VMC = "VMC"
+        for counter, name in enumerate(filename_list):
+            all_names.append(name)
+            data = []
+            input = load.specs_runnable.log_to_input(folder=folder,file_name=name)
+            try:
+                L = input["input"]["L"]
+                machine = input["input"]["machine"]
+                sampler = input["input"]["sampler"]
+                optimizer = input["input"]["optimizer"]
+                VMC = input["input"]["VMC"]
+            except KeyError:
+                if nk.MPI.rank() == 0:
+                    print(name + " is not yet finished")
+                pass
 
-    filename_list = []
-    for filename in os.listdir(folder + "/"):
-        if filename.endswith(".log"):
-            filename_list.append(filename)
-    number_plots = len(filename_list)
-    all_iters = []
-    all_energy = []
-    all_names = []
-    L = -1
-    machine = "machine"
-    sampler = "sampler"
-    optimizer = "optimizer"
-    VMC = "VMC"
-    for counter, name in enumerate(filename_list):
-        all_names.append(name)
-        data = []
-        input = load.specs_runnable.log_to_input(folder=folder,file_name=name)
-        try:
-            L = input["input"]["L"]
-            machine = input["input"]["machine"]
-            sampler = input["input"]["sampler"]
-            optimizer = input["input"]["optimizer"]
-            VMC = input["input"]["VMC"]
-        except KeyError:
-            print(name + " is not yet finished")
 
 
+            with open(folder + "/" + name) as f:
+                lines = f.readlines()
 
-        with open(folder + "/" + name) as f:
-            lines = f.readlines()
+            try:
+                data = json.loads(lines[0])
+            except ValueError as err:
+                print(err)
 
-        try:
-            data = json.loads(lines[0])
-        except ValueError as err:
-            print(err)
+            iters = []
+            energy = []
+            try:
+                for it in data["Output"]:
+                    iters.append(it["Iteration"])
+                    energy.append(it["Energy"]["Mean"])
+            except:
+                if nk.MPI.rank() == 0:
+                    print("failed to load %s from log file in plot" %(filename))
+                pass
 
-        iters = []
-        energy = []
-        try:
-            for it in data["Output"]:
-                iters.append(it["Iteration"])
-                energy.append(it["Energy"]["Mean"])
-        except:
-            print(name,"failed")
+            if label == "name":
+                plt.plot(iters, energy, label=name)
+            elif label == "machine":
+                plt.plot(iters, energy, label=machine)
+            elif label == "sampler":
+                plt.plot(iters, energy, label=sampler)
+            elif label == "optimizer":
+                plt.plot(iters, energy, label=optimizer)
+            elif label == "VMC":
+                plt.plot(iters, energy, label=VMC)
 
-        if label == "name":
-            plt.plot(iters, energy, label=name)
-        elif label == "machine":
-            plt.plot(iters, energy, label=machine)
-        elif label == "sampler":
-            plt.plot(iters, energy, label=sampler)
-        elif label == "optimizer":
-            plt.plot(iters, energy, label=optimizer)
-        elif label == "VMC":
-            plt.plot(iters, energy, label=VMC)
+            all_iters.append(iters)
+            all_energy.append(energy)
+            all_names.append(name)
+        plt.rcParams.update({'font.size': 8})
+        plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
+                     xmax=iters[-1], linewidth=2, color='blue', label='ExactLanczos')
+        plt.plot(iters,np.zeros_like(iters))
+        plt.title(name)
+        plt.ylabel('Energy')
+        plt.xlabel('Iteration')
+        plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
 
-        all_iters.append(iters)
-        all_energy.append(energy)
-        all_names.append(name)
-    plt.rcParams.update({'font.size': 8})
-    plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
-                 xmax=iters[-1], linewidth=2, color='blue', label='ExactLanczos')
-    plt.plot(iters,np.zeros_like(iters))
-    plt.title(name)
-    plt.ylabel('Energy')
-    plt.xlabel('Iteration')
-    plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
-
-    plt.legend()
-    plt.show()
+        plt.legend()
+        plt.show()
+    else:
+        pass

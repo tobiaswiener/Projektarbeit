@@ -26,7 +26,8 @@ class Population():
         for i in range(possibilities):
             bit_string = format(i,"0%db" %(geneticMain.BIT_LENGTH_CHROMOSOME))
             list_of_individuals.append(Individual.Individual(bit_string))
-            print("%s created" %(bit_string))
+            if nk.MPI.rank() == 0:
+                print("%s created" %(bit_string))
 
     @staticmethod
     def two_point_crossover(parent1: Individual, parent2: Individual):
@@ -61,15 +62,18 @@ class Population():
             return False, parent1, parent2
 
     def print_genes(self):
-        sum_fitness = 0
-        print("generation " + str(self.__generation))
-        for counter, indiv in enumerate(self.__list_of_individuals):
-            print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.give_fitness()))
-            sum_fitness += indiv.give_fitness()
-        print("sum fitness: " + str(sum_fitness))
-        fittest = self.give_fittest_individual()
-        print("fittest genome: " + str(fittest.give_genes().bin) + " fitness: " + str(fittest.give_fitness()))
-        print("---------------------------------")
+        if (nk.MPI.rank() == 0):
+            sum_fitness = 0
+            print("generation " + str(self.__generation))
+            for counter, indiv in enumerate(self.__list_of_individuals):
+                print(str(counter)+": " + "genome: " +str(indiv.give_genes().bin) + " fitness: " + str(indiv.give_fitness()))
+                sum_fitness += indiv.give_fitness()
+            print("sum fitness: " + str(sum_fitness))
+            fittest = self.give_fittest_individual()
+            print("fittest genome: " + str(fittest.give_genes().bin) + " fitness: " + str(fittest.give_fitness()))
+            print("---------------------------------")
+        else:
+            pass
 
     def sum_fitness(self):
         sum_fitness = 0
