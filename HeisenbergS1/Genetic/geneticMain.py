@@ -85,7 +85,7 @@ else:
 
 #global working directory
 DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
-print(DIRECTORY)
+
 try:
     os.mkdir(_FOLDER)
 except:

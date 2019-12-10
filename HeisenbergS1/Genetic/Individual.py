@@ -134,18 +134,20 @@ class Individual:
         if not(os.path.isfile(geneticMain.DIRECTORY + "/" + file_name + ".log")):
             self.run_genome()
         data=[]
-
-        try:
-            with open(geneticMain.DIRECTORY + "/" + file_name + ".log") as f:
-                lines = f.readlines()
+        fail = True
+        while fail:
             try:
-                data = json.loads(lines[0])["Output"]
-            except ValueError as err:
-                print(err)
-        except:
-            if nk.MPI.rank() == 0:
-                print("RANK %d: %s/%s.log failed" %(nk.MPI.rank(),geneticMain.DIRECTORY,file_name))
-            pass
+                with open(geneticMain.DIRECTORY + "/" + file_name + ".log") as f:
+                    lines = f.readlines()
+                try:
+                    data = json.loads(lines[0])["Output"]
+                except ValueError as err:
+                    print(err)
+                fail = False
+            except:
+                if nk.MPI.rank() == 0:
+                    print("RANK %d: %s/%s.log failed" %(nk.MPI.rank(),geneticMain.DIRECTORY,file_name))
+                pass
 
         x = 50
         #Difference between Energy Mean of last x Iterations and Exact Value
