@@ -1,4 +1,3 @@
-
 import numpy as np
 import math
 import os
@@ -14,8 +13,8 @@ CLUSTER = True  #True,False
 _SEED = 1234
 np.random.seed(_SEED)
 #specify genes
-MAX_NEURONS_PER_LAYER = 64         #must be mod 2
-MAX_HIDDEN_LAYERS = 4              #must be mod 2
+MAX_NEURONS_PER_LAYER = 128         #must be mod 2
+MAX_HIDDEN_LAYERS = 8              #must be mod 2
 ACTIVATION_FUNCTION = "tanh"       #tanh, relu, lncosh
 #calculate bit lengths of genes
 BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
@@ -46,12 +45,12 @@ D_MAX = 5
 DISCARDED_SAMPLES = 100
 DISCARDED_SAMPLES_ON_INIT = 0
 METHOD = "Gd"               #["Gd","Sr"]
-N_SAMPLES = 100
+N_SAMPLES = 1000
 DIAG_SHIFT = 10
 USE_ITERATIVE = True   #[False,True]
 USE_CHOLESKY = True         #[False,True]
 TARGET = "energy"
-N_ITER = 99
+N_ITER = 100
 
 #exact Solutions
 _EXACT_GS_L6 = -1.020297256150904
@@ -106,7 +105,7 @@ def tournament_plot_all():
     pop = Population.Population.create_random_population()
     pop.print_genes()
 
-    for gen in range(100):
+    for gen in range(15):
         pop.new_generation()
         pop.print_genes()
     fittest_genome = pop.give_fittest_individual().give_genes().bin

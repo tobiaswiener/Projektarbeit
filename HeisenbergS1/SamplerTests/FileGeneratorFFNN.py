@@ -18,7 +18,7 @@ _J = [1]
 
 _seed = [12345]
 _model = [
-        [2, ["tanh", "tanh"]]
+        [20, ["tanh", "tanh"]]
         ]
 
 
@@ -44,7 +44,7 @@ _diag_shift = [10]
 _use_iterative = [True,False]   #[False,True]
 _use_cholesky = [True,False]         #[False,True]
 _target = ["energy"]
-_n_iter = [10]
+_n_iter = [100]
 
 
 
