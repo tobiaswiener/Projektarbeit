@@ -13,9 +13,10 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 
 
-CLUSTER = True  #True,False
+
 #setting global seed
 _SEED = int(config["misc"]["_SEED"])
+_FUNCTION = config["misc"]["_FUNCTION"]
 np.random.seed(_SEED)
 #specify genes
 MAX_NEURONS_PER_LAYER = int(config["genes"]["MAX_NEURONS_PER_LAYER"])
@@ -98,7 +99,7 @@ def tournament_test():
     pop = Population.Population.create_random_population()
     pop.print_genes()
     fitnesslist = [[pop.give_generation()], [pop.sum_fitness()]]
-    for gen in range(50):
+    for gen in range(GENERATIONS):
         pop.new_generation()
         fitnesslist[0].append(gen + 1)
         fitnesslist[1].append(pop.sum_fitness())
@@ -136,10 +137,12 @@ def tournament_cluster():
 
 
 def main():
+    if _FUNCTION == "tournament_cluster":
+        tournament_cluster()
+    elif _FUNCTION == "tournament_plot_all":
+        tournament_plot_all()
+    elif _FUNCTION == "create_all":
+        Population.Population.create_all()
 
-    #tournament_cluster()
-    tournament_plot_all()
-    #Population.Population.create_all()
-    pass
 if __name__=="__main__":
     main()
