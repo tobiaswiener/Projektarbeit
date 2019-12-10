@@ -70,8 +70,7 @@ def plot_file(file_name: str, folder:str):
         plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
         plt.legend()
         plt.show()
-    else:
-        pass
+
 
 
 
@@ -193,7 +192,7 @@ def plot_folder_in_same_plot20(folder: str,label:str = "name"):  #legend=["name"
 
 
 def plot_folder_in_same_plot(folder: str,label:str = "name"):
-    if (nk.MPI.rank() == 0):
+    if nk.MPI.rank() == 0:
         filename_list = []
         for filename in os.listdir(folder + "/"):
             if filename.endswith(".log"):
@@ -268,5 +267,3 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):
 
         plt.legend()
         plt.show()
-    else:
-        pass
