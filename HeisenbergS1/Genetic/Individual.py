@@ -166,7 +166,7 @@ class Individual:
 
         #Varianz of last x Iterations
         variance = 0
-        try: #todo numerical vaalue out of range
+        try:
             for iteration in data[-x:]:
                 #variance += (iteration["Energy"]["Mean"]-energy_mean)**2          #todo try which one
                 variance += (iteration["Energy"]["Mean"]-geneticMain.EXACT_GS)**2
