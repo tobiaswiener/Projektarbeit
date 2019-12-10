@@ -18,6 +18,7 @@ config.read("config.ini")
 _SEED = int(config["misc"]["_SEED"])
 _FUNCTION = config["misc"]["_FUNCTION"]
 np.random.seed(_SEED)
+_FOLDER = config["misc"]["_FOLDER"]
 #specify genes
 MAX_NEURONS_PER_LAYER = int(config["genes"]["MAX_NEURONS_PER_LAYER"])
 MAX_HIDDEN_LAYERS = int(config["genes"]["MAX_HIDDEN_LAYERS"])
@@ -83,8 +84,12 @@ else:
 
 
 #global working directory
-DIRECTORY = "logs/L%d_%d_%d_I%d_S%d_%s" %(L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
-
+DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
+print(DIRECTORY)
+try:
+    os.mkdir(_FOLDER)
+except:
+    pass
 try:
     os.mkdir(DIRECTORY)
 except:
@@ -117,6 +122,7 @@ def tournament_plot_all():
         pop.new_generation()
         pop.print_genes()
     fittest_genome = pop.give_fittest_individual().give_genes().bin
+
     geneticPlot.plot_folder_in_same_plot(DIRECTORY,"machine")
     geneticPlot.plot_file(fittest_genome+".log",DIRECTORY)
     print("Possible Networks", 2**BIT_LENGTH_CHROMOSOME)
