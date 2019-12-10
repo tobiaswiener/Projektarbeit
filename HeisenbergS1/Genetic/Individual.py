@@ -88,11 +88,11 @@ class Individual:
         for layer in layers:
             layer.init_random_parameters(seed=1234,sigma=0.01)
         ma = nk.machine.FFNN(hilbert, layers)
-
         if (geneticMain.SAMPLER == "MetropolisLocal"):
             sa = nk.sampler.MetropolisLocal(machine=ma)
         elif (geneticMain.SAMPLER == "MetropolisHop"):
             sa = nk.sampler.MetropolisHop(machine=ma, d_max=geneticMain.D_MAX)
+
         if (geneticMain.OPTIMIZER == "AdaMax"):
             opt = nk.optimizer.AdaMax(alpha=geneticMain.ALPHA, beta1=geneticMain.BETA1, beta2=geneticMain.BETA2,
                                       epscut=geneticMain.EPSCUT)
@@ -135,30 +135,16 @@ class Individual:
             self.run_genome()
         data=[]
 
-        if geneticMain.CLUSTER:
+        try:
+            with open(geneticMain.DIRECTORY + "/" + file_name + ".log") as f:
+                lines = f.readlines()
             try:
-                with open(geneticMain.DIRECTORY + "/" + file_name +".log") as f:
-                    lines = f.readlines()
-                try:
-                    data = json.loads(lines[0])["Output"]
-                except ValueError as err:
-                    print(err)
-            except:
-                print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
-
-        else:
-            try:
-                with open(geneticMain.DIRECTORY + "/" + file_name + ".log") as f:
-                    lines = f.readlines()
-                for line in lines[:-3]:
-                    try:
-                        b = json.loads(line[0:len(line) - 2])
-                        data.append(b)
-                    except ValueError:
-                        pass
-            except:
-                print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
-                pass
+                data = json.loads(lines[0])["Output"]
+            except ValueError as err:
+                print(err)
+        except:
+            print("%s/%s.log failed" %(geneticMain.DIRECTORY,file_name))
+            pass
 
         x = 50
         #Difference between Energy Mean of last x Iterations and Exact Value
@@ -170,15 +156,17 @@ class Individual:
                 energy_sum += iteration["Energy"]["Mean"]
             energy_mean = energy_sum/len(data[-x:])
             delta_energy_mean = np.abs(energy_mean-geneticMain.EXACT_GS)
+
         except ZeroDivisionError:
             delta_energy_mean = math.inf
             print("fitness evaluation (mean) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
         except OverflowError:
             delta_energy_mean = math.inf
 
+
         #Varianz of last x Iterations
         variance = 0
-        try:
+        try: #todo numerical vaalue out of range
             for iteration in data[-x:]:
                 #variance += (iteration["Energy"]["Mean"]-energy_mean)**2          #todo try which one
                 variance += (iteration["Energy"]["Mean"]-geneticMain.EXACT_GS)**2
@@ -186,8 +174,8 @@ class Individual:
         except ZeroDivisionError:
             variance= math.inf
             print("fitness evaluation (varianz) for %s/%s failed" % (geneticMain.DIRECTORY,file_name))
-        except OverflowError: #todo right exception?
-            variance = math.inf
+        except OverflowError:
+            delta_energy_mean = math.inf
         fitness = 1/(delta_energy_mean+variance)
         return fitness
 

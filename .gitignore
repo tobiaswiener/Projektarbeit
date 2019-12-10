@@ -2,4 +2,7 @@
 /VarMonteCarloNN/
 /HeisenbergS1/Genetic/test/1_1
 /HeisenbergS1/NetketExamples/MPS_heisenberg1d_N20.json
+/HeisenbergS1/SamplerTests/log/
+/HeisenbergS1/.idea/
+/HeisenbergS1/Genetic/logs/
 /HeisenbergS1/.idea/
