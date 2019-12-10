@@ -20,6 +20,15 @@ class Population():
         return random_population
 
     @staticmethod
+    def create_all():
+        possibilities = 2**geneticMain.BIT_LENGTH_CHROMOSOME
+        list_of_individuals = []
+        for i in range(possibilities):
+            bit_string = format(i,"0%db" %(geneticMain.BIT_LENGTH_CHROMOSOME))
+            list_of_individuals.append(Individual.Individual(bit_string))
+            print("%s created" %(bit_string))
+
+    @staticmethod
     def two_point_crossover(parent1: Individual, parent2: Individual):
         bit_length_chromosome = geneticMain.BIT_LENGTH_CHROMOSOME
         crossover_prob = geneticMain.CROSSOVER_PROP
