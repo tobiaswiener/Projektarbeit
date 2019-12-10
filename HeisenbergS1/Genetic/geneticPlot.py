@@ -47,9 +47,6 @@ def plot_file(file_name: str, folder:str):
             energy.append(it["Energy"]["Mean"])
     except:
         print(file_name, "failed")
-
-
-
     input = load.specs_runnable.log_to_input(folder=folder, file_name=file_name)
     try:
         L = input["input"]["L"]
@@ -63,7 +60,7 @@ def plot_file(file_name: str, folder:str):
         energy.append(iteration["Energy"]["Mean"])
     plt.rcParams.update({'font.size': FONT_SIZE})
 
-    plt.plot(iters, energy, color='red', label=file_name,linewidth=4)
+    plt.plot(iters, energy, color='red', label=input["input"]["machine"],linewidth=4)
     plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                 xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
     plt.title(file_name)

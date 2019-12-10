@@ -6,19 +6,19 @@ import itertools
 import os
 
 
-directory = "pythonfailtest"
+directory = "speedtest"
 try:
     os.mkdir(directory)
 except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [6]
+_L = [10]
 _J = [1]
 
 _seed = [12345]
 _model = [
-        [20, ["tanh", "tanh"]]
+        [4, ["tanh", "tanh", "tanh"]]
         ]
 
 
@@ -36,15 +36,15 @@ _d_max = [5]
 
 
 """VMC"""
-_discarded_samples = [300]
+_discarded_samples = [0]
 _discarded_samples_on_init = [0]
-_method = ["Gd","Sr"]                #["Gd","Sr"]
-_n_samples = [2000]
+_method = ["Sr"]                #["Gd","Sr"]
+_n_samples = [100]
 _diag_shift = [10]
-_use_iterative = [True,False]   #[False,True]
-_use_cholesky = [True,False]         #[False,True]
+_use_iterative = [True]   #[False,True]
+_use_cholesky = [True]         #[False,True]
 _target = ["energy"]
-_n_iter = [100]
+_n_iter = [1000]
 
 
 
