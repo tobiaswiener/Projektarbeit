@@ -13,8 +13,8 @@ CLUSTER = True  #True,False
 _SEED = 1234
 np.random.seed(_SEED)
 #specify genes
-MAX_NEURONS_PER_LAYER = 256         #must be mod 2
-MAX_HIDDEN_LAYERS = 8              #must be mod 2
+MAX_NEURONS_PER_LAYER = 64         #must be mod 2
+MAX_HIDDEN_LAYERS = 4              #must be mod 2
 ACTIVATION_FUNCTION = "tanh"       #tanh, relu, lncosh
 #calculate bit lengths of genes
 BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
@@ -44,13 +44,13 @@ D_MAX = 5
 #VMC
 DISCARDED_SAMPLES = 100
 DISCARDED_SAMPLES_ON_INIT = 0
-METHOD = "Sr"               #["Gd","Sr"]
-N_SAMPLES = 1000
+METHOD = "Gd"               #["Gd","Sr"]
+N_SAMPLES = 100
 DIAG_SHIFT = 10
 USE_ITERATIVE = True   #[False,True]
 USE_CHOLESKY = True         #[False,True]
 TARGET = "energy"
-N_ITER = 500
+N_ITER = 100
 
 #exact Solutions
 _EXACT_GS_L6 = -1.020297256150904
