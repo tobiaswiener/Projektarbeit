@@ -14,7 +14,7 @@ from typing import List
 
 #todo clean up
 
-#todo get Constants from geneticMain.py
+
 Y_MIN_From_Exact = -1
 Y_MAX_From_Exact = 30
 FONT_SIZE = 5
