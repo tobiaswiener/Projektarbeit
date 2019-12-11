@@ -125,7 +125,7 @@ class Individual:
                     f.write("\nduration: " + str(start_time - end_time))
         except:
             print(geneticMain.DIRECTORY + "/" + file_name + "failed")
-    def eval_fitness(self):
+    def eval_fitness1(self):
         global fitness
         file_name = self.__genes.bin
         file_name_all = geneticMain.DIRECTORY + "/" + file_name + ".log"
@@ -139,7 +139,7 @@ class Individual:
 
         return float(fitness)
 
-    def eval_fitness1(self):
+    def eval_fitness(self):
         #todo punish heavy oscillations
         #todo render flat line invalid (maybe, maybe rerun?)
         fitness = 0
