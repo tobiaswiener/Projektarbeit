@@ -138,8 +138,10 @@ class Individual:
                 fitness = file.read()
 
         return float(fitness)
-
     def eval_fitness(self):
+        return geneticMain.FITNESSES[self.give_genes().bin]
+
+    def eval_fitness2(self):
         #todo punish heavy oscillations
         #todo render flat line invalid (maybe, maybe rerun?)
         fitness = 0

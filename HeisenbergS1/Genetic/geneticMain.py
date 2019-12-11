@@ -8,6 +8,7 @@ import geneticPlot
 import netket as nk
 import configparser
 import time
+import json
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -91,6 +92,8 @@ try:
     os.mkdir(DIRECTORY)
 except:
     pass
+with open(DIRECTORY+'/fitnesses.txt') as json_file:
+    FITNESSES = json.load(json_file)
 
 
 def tournament_test():
@@ -137,7 +140,7 @@ def tournament_cluster():
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
 
 
-def test_hyper():
+def test_hyper(seed):
     # pop = Population.Population.create_random_population()
     # pop.print_genes()
     # list = []
@@ -150,15 +153,21 @@ def test_hyper():
     # print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
     # plt.plot(list)
     # plt.show()
+    global _SEED
+    _SEED = seed
+    np.random.seed(_SEED)
     list_of_steps = []
-
+    index=0
     for popsize in range(6, 40, 2):
         for toursize in range(2, 20):
             for mutateprob in [0., 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09]:
                 for crossprob in [0., 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375,
                                   0.4375, 0.5, 0.5625, 0.625, 0.6875, 0.75, 0.8125,
                                   0.875, 0.9375, 1]:
+
+
                     try:
+                        start =time.time()
                         global TOURNAMENT_SIZE
                         global POPULATION_SIZE
                         global MUTATE_PROB
@@ -185,39 +194,47 @@ def test_hyper():
                         name = "PS%d_TS%d_MP%f_CP%f_most%f_steps%d" % (
                             popsize, toursize, mutateprob, crossprob, most, steps)
                         # plt.plot(list,label=name)
-                        element = [steps, most, "CalculatedNetworks: " + str(len(Individual.CALCULATED_NETWORKS)),
+                        element = [index,steps, most, len(Individual.CALCULATED_NETWORKS),
                                    "PopulationSize" + str(popsize), "TourSize" + str(toursize),
                                    "Mutation" + str(mutateprob), "Crossover" + str(crossprob)]
                         list_of_steps.append(element)
-                        print(element)
+                        ende = time.time()
+                        zeit = ende -start
+                        print(element,"time: ",zeit)
+                        index += 1
+
                     except:
                         pass
                     finally:
                         Individual.CALCULATED_NETWORKS = []
+    filename = DIRECTORY +"/"+"SEED_"+ str(_SEED) + ".txt"
+    with open(filename, 'w') as f:
+        for item in list_of_steps:
+            f.write("%s\n" % item)
 
     # plt.legend()
     # plt.show()
-    print("sort by steps")
-    print("----------------------------------------")
-    sorted_by_steps = sorted(list_of_steps, key=lambda tup: tup[0], reverse=True)
-    for i in sorted_by_steps:
-        print(i)
-    print("sort by fitness")
-    print("----------------------------------------")
-    sorted_by_fitness = sorted(list_of_steps, key=lambda tup: tup[1], reverse=True)
-    for i in sorted_by_fitness:
-        print(i)
-
-    file_steps = DIRECTORY + "/sorted_by_steps.txt"
-    file_fitness = DIRECTORY + "/sorted_by_fitness.txt"
-
-    with open(file_steps, 'w') as f:
-        for item in sorted_by_steps:
-            f.write("%s\n" % item)
-
-    with open(file_fitness, 'w') as f:
-        for item in sorted_by_fitness:
-            f.write("%s\n" % item)
+    # print("sort by steps")
+    # print("----------------------------------------")
+    # sorted_by_steps = sorted(list_of_steps, key=lambda tup: tup[0], reverse=True)
+    # for i in sorted_by_steps:
+    #     print(i)
+    # print("sort by fitness")
+    # print("----------------------------------------")
+    # sorted_by_fitness = sorted(list_of_steps, key=lambda tup: tup[1], reverse=True)
+    # for i in sorted_by_fitness:
+    #     print(i)
+    #
+    # file_steps = DIRECTORY + "/sorted_by_steps.txt"
+    # file_fitness = DIRECTORY + "/sorted_by_fitness.txt"
+    #
+    # with open(file_steps, 'w') as f:
+    #     for item in sorted_by_steps:
+    #         f.write("%s\n" % item)
+    #
+    # with open(file_fitness, 'w') as f:
+    #     for item in sorted_by_fitness:
+    #         f.write("%s\n" % item)
 
 
 def main():
@@ -228,7 +245,7 @@ def main():
     elif _FUNCTION == "create_all":
         Population.Population.create_all()
     elif _FUNCTION == "test_hyper":
-        test_hyper()
+        test_hyper(555)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import numpy as np
 import Individual
 import geneticMain
 
-
+import json
 
 class Population():
 
@@ -23,12 +23,17 @@ class Population():
     def create_all():
         possibilities = 2**geneticMain.BIT_LENGTH_CHROMOSOME
         list_of_individuals = []
+        list_of_fitnesses = {}
         for i in range(possibilities):
             bit_string = format(i,"0%db" %(geneticMain.BIT_LENGTH_CHROMOSOME))
-            list_of_individuals.append(Individual.Individual(bit_string))
+            indi = Individual.Individual(bit_string)
+            list_of_individuals.append(indi)
             if nk.MPI.rank() == 0:
                 print("%s created" %(bit_string))
-
+            list_of_fitnesses.update({bit_string:indi.give_fitness()})
+            filename = geneticMain.DIRECTORY + "fitnesses.txt"
+        with open(filename, 'w') as json_file:
+            json.dump(list_of_fitnesses, json_file)
     @staticmethod
     def two_point_crossover(parent1: Individual, parent2: Individual):
         bit_length_chromosome = geneticMain.BIT_LENGTH_CHROMOSOME
