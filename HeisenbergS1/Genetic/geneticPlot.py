@@ -11,9 +11,9 @@ import os
 import geneticLoad as load
 import geneticMain
 from typing import List
+import configparser
 
 #todo clean up
-
 
 Y_MIN_From_Exact = -1
 Y_MAX_From_Exact = 30
@@ -267,3 +267,4 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):
 
         plt.legend()
         plt.show()
+
