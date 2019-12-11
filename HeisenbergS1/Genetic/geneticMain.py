@@ -28,6 +28,8 @@ BIT_LENGTH_NO_LAYER =int(math.log2(MAX_NEURONS_PER_LAYER))
 BIT_LENGTH_HIDDEN_LAYER = int(math.log2(MAX_HIDDEN_LAYERS))
 BIT_LENGTH_CHROMOSOME = BIT_LENGTH_NO_LAYER + BIT_LENGTH_HIDDEN_LAYER
 #reproduction details
+
+
 TOURNAMENT_SIZE = int(config["reproduction"]["TOURNAMENT_SIZE"])
 POPULATION_SIZE = int(config["reproduction"]["POPULATION_SIZE"])
 MUTATE_PROB = float(config["reproduction"]["MUTATE_PROB"])
@@ -84,8 +86,8 @@ else:
 
 
 #global working directory
-DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s_TS%d_PS%d" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD,TOURNAMENT_SIZE,POPULATION_SIZE)
-
+#DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s_TS%d_PS%d" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD,TOURNAMENT_SIZE,POPULATION_SIZE)
+DIRECTORY = "%s/L%d_%d_%d" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS)
 try:
     os.mkdir(_FOLDER)
 except:
@@ -141,6 +143,56 @@ def tournament_cluster():
         print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
 
+def test_hyper():
+    # pop = Population.Population.create_random_population()
+    # pop.print_genes()
+    # list = []
+    # list.append(pop.give_fittest_individual().give_fitness())
+    # for gen in range(GENERATIONS):
+    #     pop.new_generation()
+    #     pop.print_genes()
+    #     list.append(pop.give_fittest_individual().give_fitness())
+    # print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
+    # print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
+    # plt.plot(list)
+    # plt.show()
+    list_of_steps = []
+    for popsize in range(6,8,2):
+        for toursize in range(2,3):
+            for mutateprob in np.arange(0,0.11,0.01):
+                for crossprob in np.arange(0,1.1,0.125):
+                    global TOURNAMENT_SIZE
+                    global POPULATION_SIZE
+                    global MUTATE_PROB
+                    global CROSSOVER_PROP
+                    list = []
+                    POPULATION_SIZE = popsize
+                    TOURNAMENT_SIZE = toursize
+                    MUTATE_PROB = mutateprob
+                    CROSSOVER_PROP = crossprob
+                    pop = Population.Population.create_random_population()
+                    list.append(pop.give_fittest_individual().give_fitness())
+                    for gen in range(GENERATIONS):
+                        pop.new_generation()
+                        list.append(pop.give_fittest_individual().give_fitness())
+
+                    steps = 0
+                    most = list[0]
+
+                    for i in list:
+                        if(most < i):
+                            most = i
+                            steps += 1
+
+                    name  = "PS%d_TS%d_MP%f_CP%f_most%f_steps%d" % (popsize,toursize,mutateprob,crossprob,most,steps)
+                    #plt.plot(list,label=name)
+                    list_of_steps.append([steps,most,"CN"+str(len(Individual.CALCULATED_NETWORKS)),"PS"+str(popsize),"TS"+str(toursize),"MP"+str(mutateprob),"CP"+str(crossprob)])
+
+    #plt.legend()
+    #plt.show()
+    sorted_by_second = sorted(list_of_steps, key=lambda tup: tup[0])
+    for i in sorted_by_second:
+        print(i)
 
 def main():
     if _FUNCTION == "tournament_cluster":
@@ -149,6 +201,7 @@ def main():
         tournament_plot_all()
     elif _FUNCTION == "create_all":
         Population.Population.create_all()
-
+    elif _FUNCTION =="test_hyper":
+        test_hyper()
 if __name__=="__main__":
     main()
