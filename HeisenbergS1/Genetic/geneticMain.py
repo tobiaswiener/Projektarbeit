@@ -10,15 +10,26 @@ import configparser
 
 
 config = configparser.ConfigParser()
-config.read("config.ini")
+config.read("mainconfig.ini")
 
+
+_CONFIG = config["misc"]["_CONFIG"]
+_FUNCTION = config["misc"]["_FUNCTION"]
+_FOLDER = config["misc"]["_FOLDER"]
+
+
+if _FUNCTION == "tournament_plot_all":
+    nconfig =config["misc"]["_FOLDER"] + "/" + _CONFIG
+    config.clear()
+    config.read(nconfig)
 
 
 #setting global seed
 _SEED = int(config["misc"]["_SEED"])
-_FUNCTION = config["misc"]["_FUNCTION"]
+
 np.random.seed(_SEED)
-_FOLDER = config["misc"]["_FOLDER"]
+
+
 #specify genes
 MAX_NEURONS_PER_LAYER = int(config["genes"]["MAX_NEURONS_PER_LAYER"])
 MAX_HIDDEN_LAYERS = int(config["genes"]["MAX_HIDDEN_LAYERS"])
@@ -84,8 +95,8 @@ else:
 
 
 #global working directory
-DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s_TS%d_PS%d" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD,TOURNAMENT_SIZE,POPULATION_SIZE)
-
+#DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
+DIRECTORY =_FOLDER
 try:
     os.mkdir(_FOLDER)
 except:
