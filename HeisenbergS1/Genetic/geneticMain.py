@@ -146,7 +146,8 @@ def tournament_cluster():
     if(nk.MPI.rank()==0):
         print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
-    save_config()
+    if(nk.MPI.rank()==0):
+        save_config()
 
 def main():
     if _FUNCTION == "tournament_cluster":
