@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import geneticPlot
 import netket as nk
 import configparser
+import shutil
 
 
 config = configparser.ConfigParser()
@@ -84,7 +85,7 @@ else:
 
 
 #global working directory
-DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s_TS%d_PS%d" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD,TOURNAMENT_SIZE,POPULATION_SIZE)
+DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
 
 try:
     os.mkdir(_FOLDER)
@@ -98,6 +99,11 @@ except:
 
 
 
+def save_config():
+    n=1
+    while os.path.isfile(DIRECTORY+"/"+"config"+str(n)+".ini"):
+        n+=1
+    shutil.copy("config.ini",DIRECTORY+"/"+"config"+str(n)+".ini")
 
 
 def tournament_test():
@@ -140,7 +146,7 @@ def tournament_cluster():
     if(nk.MPI.rank()==0):
         print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
-
+    save_config()
 
 def main():
     if _FUNCTION == "tournament_cluster":
