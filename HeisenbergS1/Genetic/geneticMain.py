@@ -147,6 +147,8 @@ def tournament_plot_all():
     print(pop.give_fittest_individual().decode_genome())
 
 def tournament_cluster():
+    if(nk.MPI.rank()==0):
+        save_config()
     pop = Population.Population.create_random_population()
     if(nk.MPI.rank()==0):
         pop.print_genes()
@@ -157,8 +159,7 @@ def tournament_cluster():
     if(nk.MPI.rank()==0):
         print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
-    if(nk.MPI.rank()==0):
-        save_config()
+
 
 
 def main():
