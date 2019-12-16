@@ -2,8 +2,7 @@ import netket as nk
 import numpy as np
 import Individual
 import geneticMain
-
-
+import copy
 
 class Population():
 
@@ -100,6 +99,8 @@ class Population():
         return mating_pool
 
     def new_generation(self):
+        fittesttemp = self.give_fittest_individual()
+        fittest = copy.deepcopy(fittesttemp)
         new_population_list = []
         mating_pool = self.selection_tournament()
 
@@ -112,7 +113,8 @@ class Population():
 
         for indiv in new_population_list:
             indiv.mutate()
-
+        r = np.random.randint(0,len(new_population_list))
+        new_population_list[r] = fittest
         self.__list_of_individuals = new_population_list
         self.__generation += 1
 

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import geneticPlot
 import netket as nk
 import configparser
+import shutil
 
 
 config = configparser.ConfigParser()
@@ -109,6 +110,11 @@ except:
 
 
 
+def save_config():
+    n=1
+    while os.path.isfile(DIRECTORY+"/"+"config"+str(n)+".ini"):
+        n+=1
+    shutil.copy("config.ini",DIRECTORY+"/"+"config"+str(n)+".ini")
 
 
 def tournament_test():
@@ -151,7 +157,8 @@ def tournament_cluster():
     if(nk.MPI.rank()==0):
         print("Possible Networks", 2 ** BIT_LENGTH_CHROMOSOME)
         print("Calculated Networks: ", len(Individual.CALCULATED_NETWORKS))
-
+    if(nk.MPI.rank()==0):
+        save_config()
 
 
 def main():
