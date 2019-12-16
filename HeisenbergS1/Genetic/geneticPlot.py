@@ -64,7 +64,7 @@ def plot_file(file_name: str, folder:str):
         plt.plot(iters, energy, color='red', label=input["input"]["machine"],linewidth=4)
         plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                     xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
-        plt.title(file_name)
+        plt.title(folder)
         plt.ylabel('Energy')
         plt.xlabel('Iteration')
         plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
@@ -260,7 +260,7 @@ def plot_folder_in_same_plot(folder: str,label:str = "name"):
         plt.axhline(y=geneticMain.EXACT_GS, xmin=0,
                      xmax=iters[-1], linewidth=2, color='blue', label='ExactLanczos')
         plt.plot(iters,np.zeros_like(iters))
-        plt.title(name)
+        plt.title(folder)
         plt.ylabel('Energy')
         plt.xlabel('Iteration')
         plt.axis([0, iters[-1], geneticMain.EXACT_GS+Y_MIN_From_Exact, geneticMain.EXACT_GS+Y_MAX_From_Exact])
