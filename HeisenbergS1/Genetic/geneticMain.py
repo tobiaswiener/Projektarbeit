@@ -96,8 +96,10 @@ else:
 
 
 #global working directory
-#DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
-DIRECTORY =_FOLDER
+if _FUNCTION == "tournament_plot_all":
+    DIRECTORY =_FOLDER
+else:
+    DIRECTORY = "%s/L%d_%d_%d_I%d_S%d_%s" %(_FOLDER,L,MAX_NEURONS_PER_LAYER,MAX_HIDDEN_LAYERS,N_ITER,N_SAMPLES,METHOD)
 try:
     os.mkdir(_FOLDER)
 except:
@@ -114,7 +116,7 @@ def save_config():
     n=1
     while os.path.isfile(DIRECTORY+"/"+"config"+str(n)+".ini"):
         n+=1
-    shutil.copy("config.ini",DIRECTORY+"/"+"config"+str(n)+".ini")
+    shutil.copy("mainconfig.ini",DIRECTORY+"/"+"config"+str(n)+".ini")
 
 
 def tournament_test():
