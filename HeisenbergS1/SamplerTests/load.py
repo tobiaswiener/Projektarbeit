@@ -76,17 +76,17 @@ class specs_runnable:
         layers = []
 
         layers.append(
-            nk.layer.FullyConnected(input_size=self._L, output_size=int(self._model[0] * self._L), use_bias=True))
+            nk.layer.FullyConnected(input_size=self._L, output_size=int(self._model[0]), use_bias=True))
 
         for layer in self._model[1]:
             if (layer == "tanh"):
-                layers.append(nk.layer.Tanh(input_size=int(self._model[0] * self._L)))
+                layers.append(nk.layer.Tanh(input_size=int(self._model[0])))
             elif (layer == "lncosh"):
-                layers.append(nk.layer.Lncosh(input_size=int(self._model[0] * self._L)))
+                layers.append(nk.layer.Lncosh(input_size=int(self._model[0])))
             elif (layer == "Relu"):
-                layers.append(nk.layer.Relu(input_size=int(self._model[0] * self._L)))
+                layers.append(nk.layer.Relu(input_size=int(self._model[0])))
 
-        layers.append(nk.layer.SumOutput(input_size=int(self._model[0] * self._L)))
+        layers.append(nk.layer.SumOutput(input_size=int(self._model[0])))
         layers = tuple(layers)  # layers must be tuple
 
         for layer in layers:

@@ -13,12 +13,12 @@ except(FileExistsError):
     pass
 
 """variables to specify"""
-_L = [10]
+_L = [16]
 _J = [1]
 
 _seed = [12345]
 _model = [
-        [4, ["tanh", "tanh", "tanh"]]
+        [10, ["tanh", "tanh", "tanh","tanh", "tanh", "tanh","tanh", "tanh", "tanh"]]
         ]
 
 
@@ -36,15 +36,15 @@ _d_max = [5]
 
 
 """VMC"""
-_discarded_samples = [0]
+_discarded_samples = [100]
 _discarded_samples_on_init = [0]
 _method = ["Sr"]                #["Gd","Sr"]
-_n_samples = [100]
+_n_samples = [1000]
 _diag_shift = [10]
 _use_iterative = [True]   #[False,True]
 _use_cholesky = [True]         #[False,True]
 _target = ["energy"]
-_n_iter = [1000]
+_n_iter = [10]
 
 
 

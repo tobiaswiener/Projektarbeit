@@ -256,7 +256,7 @@ def plot_folder_in_same_plot_cluster(folder: str,label:str = "name"):
         all_names.append(name)
     plt.rcParams.update({'font.size': 8})
     plt.axhline(y=exact_gs_energy_infinty, xmin=0,
-                 xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
+                  xmax=iters[-1], linewidth=2, color='k', label='ExactInfinity')
     plt.axhline(y=exact_gs_energy_L10, xmin=0,
                  xmax=iters[-1], linewidth=2, color='blue', label='ExactLanczos')
     plt.plot(iters,np.zeros_like(iters))
